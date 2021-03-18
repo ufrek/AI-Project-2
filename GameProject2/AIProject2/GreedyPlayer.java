@@ -122,7 +122,7 @@ public class GreedyPlayer implements Player
         {
             if(bestCastle == null || closestScore > Math.abs(castleScore(CastleID.CastleB)))
             {
-                closestScore = castleScore(CastleID.CastleB);
+                closestScore = Math.abs(castleScore(CastleID.CastleB));
                 bestCastle = CastleID.CastleB;
             }
         }
@@ -130,7 +130,6 @@ public class GreedyPlayer implements Player
         {
             if(bestCastle == null || closestScore > Math.abs(castleScore(CastleID.CastleC)))
             {
-                closestScore = castleScore(CastleID.CastleC);
                 bestCastle = CastleID.CastleC;
             }
         }
