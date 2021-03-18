@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class GameRules{
 
-    static PlayerID otherPlayer(PlayerID p){
+    public static PlayerID otherPlayer(PlayerID p){
 	if (p == PlayerID.TOP){
 	    return PlayerID.BOT;
 	}
@@ -15,7 +15,7 @@ public class GameRules{
 	}
     }
 
-    static boolean isGameOver(GameState state){
+    public static boolean isGameOver(GameState state){
 	boolean done = true;
 	if (state.getCastleWon(CastleID.CastleA) == null){
 	    done = false;
@@ -288,9 +288,11 @@ public class GameRules{
 
 	if( state.getHidden(PlayerID.TOP) == cas ){
 	    state.addMonster(cas, PlayerID.TOP, Monster.DRAGON);
+		state.DragonRevealed((PlayerID.TOP));
 	}
 	if(state.getHidden(PlayerID.BOT) == cas){
 	    state.addMonster(cas, PlayerID.BOT,  Monster.DRAGON);
+		state.DragonRevealed((PlayerID.BOT));
 	}
 	
 	if( state.getMonsters(cas, PlayerID.TOP).contains( Monster.SLAYER) ){

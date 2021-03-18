@@ -32,6 +32,10 @@ public class GameState {
     String bot_name;
 
     Move last_move;
+
+	//flags for if the dragons are revealed
+	boolean isBotOppDragonKnown = false;
+	boolean isTopOppDragonKnown = false;
     
     static public GameState concedeState(GameState old, PlayerID play){
 	GameState state = new GameState(old);
@@ -97,6 +101,29 @@ public class GameState {
 	}
 	return answer;
     }
+
+	//will tell you if the hidden dragon is known, probably not done the best way
+	public CastleID getOppHiddenDragon(PlayerID play)
+	{
+		CastleID answer = null;
+		if(isBotOppDragonKnown && play == PlayerID.TOP){
+			return bot_hidden;
+		}
+		if(isTopOppDragonKnown && play == PlayerID.BOT)
+		{
+			return top_hidden;
+		}
+		return answer;
+	}
+
+	public void DragonRevealed(PlayerID play)
+	{
+		if(play == PlayerID.TOP)
+			isTopOppDragonKnown = true;
+		if(play == PlayerID.BOT)
+			isBotOppDragonKnown = true;
+
+	}
 
     public void setHidden(PlayerID play, CastleID cas){
 	if(play == PlayerID.TOP){

@@ -1,6 +1,8 @@
 package ProjectTwoEngine;
 
-public interface Player{
+public interface Player
+{
+    CastleID hiddenOppDragonLocation = null;
 
     //This function is called when the game starts
     public void begin(GameState init_state);
@@ -25,6 +27,8 @@ public interface Player{
     public PlaceMonsterMove getPlace(GameState state, Monster mon);
 
     public String getPlayName();
+
+    
 }
 
    
