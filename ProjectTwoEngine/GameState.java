@@ -31,7 +31,7 @@ public class GameState {
     String top_name;
     String bot_name;
 
-    Move last_move;
+    Move last_move = null;
 
 	//flags for if the dragons are revealed
 	boolean isBotOppDragonKnown = false;

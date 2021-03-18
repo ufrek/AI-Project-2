@@ -21,6 +21,14 @@ public class Node
         this.curPlayer = curPlayer;
     }
 
+    public Node(Node node) //copy constructor
+    {
+        this.state = node.getState();
+        this.parent = node.getParent();
+        this.curPlayer = node.getCurPlayer;
+    }
+
+
     public Node(GameState gs, Node parent, PlayerID curPlayer)
     {
         State s = new State(gs.getLastMove(), gs, curPlayer);
@@ -55,4 +63,21 @@ public class Node
         return parent;
     }
 
+    public Node getChildWithMaxScore()
+    {
+        List<Node> children = this.getChildArray();
+        double maxScore = 0;
+        Node maxChild = null;
+        for (Node node : children) 
+        {
+            double winScore = node.getState().getWinScore();
+            if(winScore > maxScore)
+            {
+                maxScore = winScore;
+                maxChild = node;
+            }
+        }
+        return maxChild;
+
+    }
 }
