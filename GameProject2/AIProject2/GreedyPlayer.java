@@ -118,12 +118,15 @@ public class GreedyPlayer implements Player
             PlaceMonsterMove m2 = (PlaceMonsterMove)m;
             CastleID castle = m2.getCastle();
             
-            if(bestCastle == null || closestScore > Math.abs(castleScore(castle)))
+            if(bestCastle == null || (closestScore > Math.abs(castleScore(castle)) && (!mon.equals(Monster.DRAGON) || !isDragonTrap(castle))))
             {
+                
                 bestCastle = castle;
                 closestScore = Math.abs(castleScore(castle));
+               
             }
         }
+        
         
     
         return new PlaceMonsterMove(playID, bestCastle, mon); 
@@ -193,5 +196,32 @@ public class GreedyPlayer implements Player
         }
         
         return score;
+    }
+    
+    private boolean isDragonTrap(CastleID castle)
+    {
+        int dragonIndex = 0;
+        
+        for (Monster m : currentState.getMonsters(castle, playID))
+        {
+            if(m.equals(Monster.DRAGON))
+            {
+                dragonIndex++;
+            }
+        }
+        for (Monster m : currentState.getMonsters(castle, enemyID))
+        {
+            if(m.equals(Monster.SLAYER))
+            {
+                dragonIndex--;
+            }
+        }
+        
+        if(currentState.getHidden(playID).equals(castle))
+        {
+            dragonIndex++;
+        }
+        
+        return dragonIndex < 0;
     }
 }
