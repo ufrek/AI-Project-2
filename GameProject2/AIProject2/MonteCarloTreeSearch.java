@@ -2,15 +2,17 @@ package GameProject2.AIProject2;
 
 import java.util.Random;
 
+import javax.lang.model.util.ElementScanner14;
+
 import ProjectTwoEngine.*;
 import java.util.List;
 
 public class MonteCarloTreeSearch 
 {
-    static final int WINSCORE = 0;
+    static final int winScore = 10;
     int level;
     PlayerID opponent;
-    int searchDuration = 1000;                      //play with values
+    int searchDuration = 10000;                      //play with values
    
 
     public Move findNextMove(GameState state, PlayerID curPlayer)
@@ -18,7 +20,10 @@ public class MonteCarloTreeSearch
         opponent = GameRules.otherPlayer(curPlayer);
         Tree tree = new Tree(new Node(state, null, opponent));
         Node rootNode = tree.getRoot();
-
+        //figure out how to expand the node ------can clean this up a bit I suppose
+        expandNode(rootNode);
+        
+       
         long start = System.currentTimeMillis();
         long end = start + searchDuration;                        
         while (System.currentTimeMillis() < end) 
@@ -27,20 +32,8 @@ public class MonteCarloTreeSearch
             Node promisingNode = selectPromisingNode(rootNode);    
             if (!promisingNode.isOver())
             {
-                Move m = promisingNode.getState().getMove();
-                if(m = null || m instanceof PlaceMonsterMove) //root case: start on the buy phase
-                {
-                    expandBuyNode(promisingNode);
-                }
-                else if(m instanceof BuyMonsterMove)
-                {
-                    expandRespondNode(promisingNode);
-                }
-                else if(m instanceof RespondMove)
-                {
-                    expandPlaceNode(promisingNode);
-                }
-
+                expandNode(promisingNode);
+                System.out.println("Expended response Node");
             } 
                 
             
@@ -49,7 +42,7 @@ public class MonteCarloTreeSearch
             {
                 nodeToExplore = promisingNode.getRandomChildNode();
             }
-            PlayerID playoutResult = simulateRandomPlayout(nodeToExplore);
+            PlayerID playoutResult = simulateRandomPlayout(nodeToExplore, curPlayer);
             backPropogation(nodeToExplore, playoutResult);
         }
 
@@ -60,7 +53,7 @@ public class MonteCarloTreeSearch
 
     private Node selectPromisingNode(Node rootNode) 
     {
-        Node node = rootNode;
+        Node node = new Node(rootNode);
         while (node.getChildArray().size() != 0)
         {
             node = UCT.findBestNodeWithUCT(node);
@@ -68,32 +61,45 @@ public class MonteCarloTreeSearch
         return node;
     }
    
-    private void expandBuyNode(Node node) 
+    private void expandNode(Node node) 
     {
-        List<State> possibleStates = node.getState().getAllPossibleBuySuccessors(); 
-        possibleStates.forEach(state -> {
+        Node tempNode = new Node(node);
+        State tempState = tempNode.getState();
+        Move lastMove = tempState.getMove();
+        List<State> possibleStates;
+        if (lastMove == null || lastMove instanceof PlaceMonsterMove)
+        {
+
+            possibleStates = tempState.getAllPossibleBuySuccessors(tempState.getGs()); 
+           
+        }
+        else if(lastMove instanceof BuyMonsterMove)
+        {
+            
+            possibleStates = tempState.getAllPossibleRespondSuccessors(tempState.getGs()); 
+        }
+        else if (lastMove instanceof RespondMove)
+        {
+            System.out.println("Picking Response");
+            possibleStates = tempState.getAllPossiblePlaceSuccessors(tempState.getGs()); 
+        }
+        else
+        {
+            possibleStates = null;
+            System.out.println("Problem in Root Node Expansion Block");
+        }
+            
+       
+        for(State state : possibleStates) 
+        {
             Node newNode = new Node(state, node, state.getCurPlayer());
-            node.getChildArray().add(newNode);
-        });
+            GameState gs = node.getState().getGs();
+            
+            node.add(newNode);
+        }
+        
     }
 
-    private void expandRespondNode(Node node) 
-    {
-        List<State> possibleStates = node.getState().getAllPossibleRespondSuccessors(); 
-        possibleStates.forEach(state -> {
-            Node newNode = new Node(state, node, state.getCurPlayer());
-            node.getChildArray().add(newNode);
-        });
-    }
-
-    private void expandPlaceNode(Node node) 
-    {
-        List<State> possibleStates = node.getState().getAllPossiblePlaceSuccessors();
-        possibleStates.forEach(state -> {
-            Node newNode = new Node(state, node, state.getCurPlayer());
-            node.getChildArray().add(newNode);
-        });
-    }
 
     private void backPropogation(Node nodeToExplore, PlayerID player) 
     {
@@ -103,28 +109,28 @@ public class MonteCarloTreeSearch
             tempNode.getState().incrementVisit();
             if (tempNode.getState().getCurPlayer() == player)
              {
-                tempNode.getState().addScore(WIN_SCORE);            //wtf is WInScore?
+                tempNode.getState().addScore(winScore);           
             }
             tempNode = tempNode.getParent();
         }
     }
-    private int simulateRandomPlayout(Node node) 
+    private PlayerID simulateRandomPlayout(Node node, PlayerID curPlayer) 
     {
         Node tempNode = new Node(node);
         State tempState = tempNode.getState();
-        int boardStatus = tempState.getBoard().checkStatus();       ///make sure this returns player id
-        if (boardStatus == opponent) 
+        PlayerID endGameVictor = tempState.checkStatus(curPlayer);       ///make sure this returns player id
+        if (endGameVictor == opponent) 
         {
             tempNode.getParent().getState().setWinScore(Integer.MIN_VALUE);
-            return boardStatus;
+            return endGameVictor;
         }
-        while (boardStatus == Board.IN_PROGRESS)                    //figure out what this does
+        GameState gs;                               //could maybe play off of the temp node?
+        while (endGameVictor == null)                    
         {
-            tempState.togglePlayer();
-            tempState.randomPlay();
-            boardStatus = tempState.getBoard().checkStatus();
+            gs = tempState.randomPlay(tempState.getGs());
+            endGameVictor = tempState.checkStatus(curPlayer);
         }
-        return boardStatus;
+        return endGameVictor;
     }
     
 }

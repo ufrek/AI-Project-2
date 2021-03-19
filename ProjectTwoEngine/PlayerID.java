@@ -1,3 +1,3 @@
 package ProjectTwoEngine;
 
-public enum PlayerID {TOP, BOT}
+public enum PlayerID {TOP, BOT, DRAW}

@@ -2,9 +2,12 @@ package GameProject2.AIProject2;
 
 import ProjectTwoEngine.*;
 
+import java.security.interfaces.RSAPrivateCrtKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import javax.lang.model.util.ElementScanner14;
 
 public class State
 {
@@ -23,13 +26,22 @@ public class State
         rand = new Random();
     }
 
+    public State(State s)
+    {
+        this.lastMove = s.getMove();
+        this.gs = s.getGs();
+        this.curPlayer = s.getCurPlayer();
+        rand = new Random();
+    }
+
     public void incrementVisit()
     {
         visitCount += 1;
     }
 
 //-----------------------------Getting all possible states for each phase, Buy, Respond, and Place
-    public List<State> getAllPossibleBuySuccessors(GameState gs)
+//these all need to pass in parameters by copy or it eats the deck
+    public List<State> getAllPossibleBuySuccessors(GameState gs)                
     {
         List<State> successorStates = new ArrayList<State>();
 
@@ -40,7 +52,7 @@ public class State
         {
         
             GameState buyPhase = GameRules.makeMove(gsCopy, (BuyMonsterMove)buyMove);
-            State state = new State(buyMove, buyPhase, curPlayer);
+            State state = new State(buyMove, buyPhase, buyPhase.getCurPlayer());
             successorStates.add(state);
         }
           
@@ -51,12 +63,13 @@ public class State
     {
         List<State> successorStates = new ArrayList<State>();
         GameState gsCopy = new GameState(gs);
-        List<Move> respondMoves = GameRules.getLegalMoves(gsCopy);
-
+        List<Move> respondMoves = GameRules.getLegalMoves(gs);
+        System.out.println((gs.getDeckSize()));//////////////////////////////////////////Not Working.....not sure why
         for(Move respondMove : respondMoves)
         {
-            GameState respondPhase = GameRules.makeMove(gsCopy, (RespondMove)respondMove);
-            State state = new State(respondMove, respondPhase, curPlayer);
+            GameState respondPhase = GameRules.makeMove(gs, (RespondMove)respondMove);
+            
+            State state = new State(respondMove, respondPhase, respondPhase.getCurPlayer());
             successorStates.add(state);
         }
         
@@ -73,7 +86,7 @@ public class State
         {
             
             GameState placePhase = GameRules.makeMove(gsCopy, (PlaceMonsterMove)placeMove);
-            State state = new State(placeMove, placePhase, GameRules.otherPlayer(curPlayer));
+            State state = new State(placeMove, placePhase, placePhase.getCurPlayer());
             successorStates.add(state);
         }
         
@@ -81,6 +94,29 @@ public class State
     }
     
 //----------------Random Play Functions----------------------------------------
+    public GameState randomPlay(GameState state)
+    {
+        Move m = state.getLastMove();
+        if(m == null || m instanceof PlaceMonsterMove) //root case: start on the buy phase
+        {
+            return RandomBuyMonster(state);
+        }
+        else if(m instanceof BuyMonsterMove)
+        {
+            return RandomResponse(state);
+        }
+        else if (m instanceof RespondMove)
+        {
+            return RandomPlaceMonster(state);
+        }
+        else
+        {
+            System.out.println("Problem in Random Play Method");
+            return null;
+        }
+           
+    }
+
     public GameState  RandomBuyMonster(GameState state)
     {
         List<Move> leg_moves = GameRules.getLegalMoves(state);
@@ -128,6 +164,45 @@ public class State
     public GameState getGs()
     {
         return gs;
+    }
+
+    //returns null if game is still playing, otherwise returns winner/draw
+    public PlayerID checkStatus(PlayerID curPlayer)
+    {
+        if(GameRules.isGameOver(this.getGs()))
+        {
+            int curPlayerCastles = 0;
+            int oppPlayerCastles = 0;
+            for(CastleID cas : CastleID.values())
+            {
+                if(this.getGs().getCastleWon(cas) == curPlayer)
+                    curPlayerCastles += 1;
+                else
+                    oppPlayerCastles += 1;
+            }   
+
+            if(curPlayerCastles > oppPlayerCastles)
+                return curPlayer;
+            else if(oppPlayerCastles > curPlayerCastles)
+                return GameRules.otherPlayer(curPlayer);
+            else
+                return PlayerID.DRAW;
+        }
+        else
+            return null;
+
+        
+      
+    }
+
+    public void setWinScore(int value) 
+    {1
+        this.winScore = value;
+    }
+
+    public void addScore(int amount)
+    {
+        this.winScore += amount;
     }
 }
     

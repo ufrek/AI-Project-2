@@ -19,13 +19,16 @@ public class Node
         this.state = state;
         this.parent = parent;
         this.curPlayer = curPlayer;
+        childArray = new ArrayList<Node>();
     }
 
     public Node(Node node) //copy constructor
-    {
-        this.state = node.getState();
+    {   
+        State tempState = new State(node.getState());
+        this.state = tempState;
         this.parent = node.getParent();
-        this.curPlayer = node.getCurPlayer;
+        this.curPlayer = node.getState().getCurPlayer();
+        this.childArray = node.getChildArray();
     }
 
 
@@ -79,5 +82,12 @@ public class Node
         }
         return maxChild;
 
+    }
+
+    public void add(Node newNode) 
+    {
+        if(this.childArray == null)
+            this.childArray = new ArrayList<Node>();
+        this.childArray.add(newNode);
     }
 }

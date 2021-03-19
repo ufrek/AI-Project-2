@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
 
-public class GameState {
+public class GameState 
+{
     Map<CastleID, List<Monster> > top_monsters;
     Map<CastleID, List<Monster> > bot_monsters;
 

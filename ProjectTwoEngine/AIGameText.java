@@ -8,6 +8,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+import GameProject2.AIProject2.MontePythonAI;
+
 public class AIGameText{
     // Change this file name to change where the moves are written
     static final String FILE_NAME = "transcript.txt";
@@ -19,7 +21,7 @@ public class AIGameText{
     
     public static void main(String[] args) throws IOException {
 	//IMPORTANT : Change these lines to change who is playing!
-	TOP_Player = new RandomPlayer();
+	TOP_Player = new MontePythonAI();
 	BOT_Player = new RandomPlayer();	
       
 	state = new GameState(TOP_Player.getPlayName(), BOT_Player.getPlayName());
@@ -39,9 +41,10 @@ public class AIGameText{
 	TOP_Player.begin( new GameState(state, PlayerID.TOP) );
 	BOT_Player.begin( new GameState(state, PlayerID.BOT) );
 
-	while (! GameRules.isGameOver(state)){
+	while (! GameRules.isGameOver(state))
+	{
 		PlayerID cur_player = state.getCurPlayer();
-
+		System.out.println("Turn: " + state.getCurPlayer());
 		file_out.newLine();
 		file_out.newLine();
 		file_out.write("----------------------");
