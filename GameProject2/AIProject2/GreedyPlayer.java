@@ -112,27 +112,19 @@ public class GreedyPlayer implements Player
         CastleID bestCastle = null;
         int closestScore = 0;
         
-        //choose the castle with the closest score that isn't already full
-        if(GameRules.isLegalPlaceMonster(state, new PlaceMonsterMove(playID, CastleID.CastleA, mon)))
+        
+        for(Move m : GameRules.getLegalPlaceMonster(state))
         {
-            closestScore = Math.abs(castleScore(CastleID.CastleA));
-            bestCastle = CastleID.CastleA;
-        }
-        if(GameRules.isLegalPlaceMonster(state, new PlaceMonsterMove(playID, CastleID.CastleB, mon)))
-        {
-            if(bestCastle == null || closestScore > Math.abs(castleScore(CastleID.CastleB)))
+            PlaceMonsterMove m2 = (PlaceMonsterMove)m;
+            CastleID castle = m2.getCastle();
+            
+            if(bestCastle == null || closestScore > Math.abs(castleScore(castle)))
             {
-                closestScore = Math.abs(castleScore(CastleID.CastleB));
-                bestCastle = CastleID.CastleB;
+                bestCastle = castle;
+                closestScore = Math.abs(castleScore(castle));
             }
         }
-        if(GameRules.isLegalPlaceMonster(state, new PlaceMonsterMove(playID, CastleID.CastleC, mon)))
-        {
-            if(bestCastle == null || closestScore > Math.abs(castleScore(CastleID.CastleC)))
-            {
-                bestCastle = CastleID.CastleC;
-            }
-        }
+        
     
         return new PlaceMonsterMove(playID, bestCastle, mon); 
     }
