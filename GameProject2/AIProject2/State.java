@@ -46,6 +46,7 @@ public class State
         List<State> successorStates = new ArrayList<State>();
 
         GameState gsCopy = new GameState(gs);
+        //System.out.println("Stuck");
         List<Move> buyMoves = GameRules.getLegalMoves(gsCopy);
         
         for (Move buyMove : buyMoves) 
@@ -169,13 +170,13 @@ public class State
     //returns null if game is still playing, otherwise returns winner/draw
     public PlayerID checkStatus(PlayerID curPlayer)
     {
-        if(GameRules.isGameOver(this.getGs()))
+        if(GameRules.isGameOver(this.gs))
         {
             int curPlayerCastles = 0;
             int oppPlayerCastles = 0;
             for(CastleID cas : CastleID.values())
             {
-                if(this.getGs().getCastleWon(cas) == curPlayer)
+                if(this.gs.getCastleWon(cas) == curPlayer)
                     curPlayerCastles += 1;
                 else
                     oppPlayerCastles += 1;
@@ -196,7 +197,7 @@ public class State
     }
 
     public void setWinScore(int value) 
-    {1
+    {
         this.winScore = value;
     }
 

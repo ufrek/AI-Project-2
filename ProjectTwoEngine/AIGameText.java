@@ -25,7 +25,7 @@ public class AIGameText{
 	BOT_Player = new RandomPlayer();	
       
 	state = new GameState(TOP_Player.getPlayName(), BOT_Player.getPlayName());
-
+	
 	BufferedWriter file_out = new BufferedWriter(new FileWriter( FILE_NAME ));
 	file_out.write("Top Player is: ");
 	file_out.write(TOP_Player.getPlayName());
@@ -38,6 +38,8 @@ public class AIGameText{
 	System.out.println("File created successfully");
 
 	//Call the Start Game Functions
+	GameState s = new GameState(state, PlayerID.TOP);
+	System.out.println(s.getDeckSize());
 	TOP_Player.begin( new GameState(state, PlayerID.TOP) );
 	BOT_Player.begin( new GameState(state, PlayerID.BOT) );
 

@@ -44,14 +44,18 @@ public class GameRules{
 	return new_state;
     }
     
-    public static List<Move> getLegalMoves(GameState state){
+    public static List<Move> getLegalMoves(GameState state){						//stuck looping get legal moves
 	List<Move> leg_moves = null;
 	Move last_move = state.getLastMove();
 
-	if (last_move == null){
+	if (last_move == null)
+	{
+		
 	    leg_moves = getLegalBuyMonster(state);
 	}
-	else if (last_move instanceof PlaceMonsterMove){
+	else if (last_move instanceof PlaceMonsterMove)
+	{
+		//System.out.println("Stuck");
 	    leg_moves = getLegalBuyMonster(state);
 	}
 	else if (last_move instanceof RespondMove){
@@ -146,14 +150,17 @@ public class GameRules{
 	    
     //Note: You can choose any public monster
     // Price must be less than your coins
-    static List<Move> getLegalBuyMonster(GameState state){
+    static List<Move> getLegalBuyMonster(GameState state)
+	{
 	System.out.println("Get Legal Buy Monster");
 	List<Move> leg_moves = new ArrayList<Move>();
 	PlayerID play = state.getCurPlayer();
 	List<Monster> pub_mons = state.getPublicMonsters();
+	
 	int coins = state.getCoins(play);
 
-	for(Monster mon : pub_mons){
+	for(Monster mon : pub_mons)
+	{
 	    for(int i = 1; i<= coins; i++){
 		leg_moves.add( new BuyMonsterMove(play, i, mon) );
 	    }

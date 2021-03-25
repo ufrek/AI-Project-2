@@ -31,6 +31,7 @@ public class MontePythonAI implements Player
     //... but hand your opponent the price in coins
     public RespondMove getRespond(GameState state, Monster mon, int price)
     {
+        System.out.println(state.getDeckSize());
         return (RespondMove) montey.findNextMove(state, state.getCurPlayer());
     }
     
@@ -43,6 +44,7 @@ public class MontePythonAI implements Player
     //... and needs to place the monster at a castle
     public PlaceMonsterMove getPlace(GameState state, Monster mon)
     {
+       
         return (PlaceMonsterMove) montey.findNextMove(state, state.getCurPlayer());
     }
 

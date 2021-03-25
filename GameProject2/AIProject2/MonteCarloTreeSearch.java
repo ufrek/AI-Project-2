@@ -12,7 +12,7 @@ public class MonteCarloTreeSearch
     static final int winScore = 10;
     int level;
     PlayerID opponent;
-    int searchDuration = 10000;                      //play with values
+    int searchDuration = 500;                      //play with values
    
 
     public Move findNextMove(GameState state, PlayerID curPlayer)
@@ -33,7 +33,7 @@ public class MonteCarloTreeSearch
             if (!promisingNode.isOver())
             {
                 expandNode(promisingNode);
-                System.out.println("Expended response Node");
+               
             } 
                 
             
@@ -48,16 +48,21 @@ public class MonteCarloTreeSearch
 
         Node winnerNode = rootNode.getChildWithMaxScore();
         tree.setRoot(winnerNode);
+
+        GameState ga  = winnerNode.getState().getGs();
+        System.out.println("Winner node" + ga.getDeckSize());
         return winnerNode.getState().getMove();
     }
 
     private Node selectPromisingNode(Node rootNode) 
     {
         Node node = new Node(rootNode);
-        while (node.getChildArray().size() != 0)
+    
+        while (node.getChildArray().size() != 0) 
         {
             node = UCT.findBestNodeWithUCT(node);
         }
+        System.out.println("Node Selected");
         return node;
     }
    
@@ -75,12 +80,14 @@ public class MonteCarloTreeSearch
         }
         else if(lastMove instanceof BuyMonsterMove)
         {
-            
+            System.out.println("Picking Response");
+            GameState temp = node.getState().getGs();
+            System.out.println(temp.getDeckSize());
             possibleStates = tempState.getAllPossibleRespondSuccessors(tempState.getGs()); 
         }
         else if (lastMove instanceof RespondMove)
         {
-            System.out.println("Picking Response");
+            
             possibleStates = tempState.getAllPossiblePlaceSuccessors(tempState.getGs()); 
         }
         else
@@ -124,12 +131,15 @@ public class MonteCarloTreeSearch
             tempNode.getParent().getState().setWinScore(Integer.MIN_VALUE);
             return endGameVictor;
         }
-        GameState gs;                               //could maybe play off of the temp node?
-        while (endGameVictor == null)                    
+        GameState gs = tempState.getGs();                               //could maybe play off of the temp node?
+        while (!GameRules.isGameOver(gs) && endGameVictor == null)                    
         {
-            gs = tempState.randomPlay(tempState.getGs());
+            gs = tempState.randomPlay(gs);
+            Move m = tempState.getMove();
+            tempState = new State(m, gs, gs.getCurPlayer());
             endGameVictor = tempState.checkStatus(curPlayer);
         }
+        System.out.print(endGameVictor);
         return endGameVictor;
     }
     
