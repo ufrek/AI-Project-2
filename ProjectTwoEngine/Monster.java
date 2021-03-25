@@ -6,7 +6,7 @@ public enum Monster{
     GIANT("Giant", 4),
     WARLION("War Lion", 3),
     WOLF("Wolf", 2),
-    SLAYER("Dragon Slayer", 1),
+    SLAYER("Slayer", 1),
     DEAD("Dead Dragon", 0);
 
     public final String name;

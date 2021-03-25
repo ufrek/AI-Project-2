@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class GameRules{
 
-    public static PlayerID otherPlayer(PlayerID p){
+    static PlayerID otherPlayer(PlayerID p){
 	if (p == PlayerID.TOP){
 	    return PlayerID.BOT;
 	}
@@ -15,7 +15,7 @@ public class GameRules{
 	}
     }
 
-    public static boolean isGameOver(GameState state){
+    static boolean isGameOver(GameState state){
 	boolean done = true;
 	if (state.getCastleWon(CastleID.CastleA) == null){
 	    done = false;
@@ -33,29 +33,43 @@ public class GameRules{
 	GameState new_state = null;
 
 	if (mv instanceof BuyMonsterMove){
-	    new_state = makeMoveBuyMonster(state, (BuyMonsterMove) mv);
+	    if ( isLegalMove(state, mv) ){
+		new_state = makeMoveBuyMonster(state, (BuyMonsterMove) mv);
+	    }
+	    else{
+		new_state = GameState.concedeState(state, state.getCurPlayer());
+	    }
 	}
 	if (mv instanceof RespondMove){
-	    new_state = makeMoveRespond(state, (RespondMove) mv);
+	    if ( isLegalMove(state, mv) ){
+		new_state = makeMoveRespond(state, (RespondMove) mv);
+	    }
+	    else{
+		PlayerID o_player = otherPlayer(state.getCurPlayer());
+		new_state = GameState.concedeState(state, o_player);
+	    }
 	}
 	if (mv  instanceof PlaceMonsterMove){
-	    new_state = makeMovePlaceMonster(state, (PlaceMonsterMove) mv);
+	    if ( isLegalMove(state, mv) ){
+		new_state = makeMovePlaceMonster(state, (PlaceMonsterMove) mv);
+	    }
+	    else{
+		List<Move> leg_mv = getLegalMoves(state);
+		PlayerID play = leg_mv.get(0).getPlayer();
+		new_state = GameState.concedeState(state, play);
+	    }
 	}
 	return new_state;
     }
     
-    public static List<Move> getLegalMoves(GameState state){						//stuck looping get legal moves
+    public static List<Move> getLegalMoves(GameState state){
 	List<Move> leg_moves = null;
 	Move last_move = state.getLastMove();
 
-	if (last_move == null)
-	{
-		
+	if (last_move == null){
 	    leg_moves = getLegalBuyMonster(state);
 	}
-	else if (last_move instanceof PlaceMonsterMove)
-	{
-		//System.out.println("Stuck");
+	else if (last_move instanceof PlaceMonsterMove){
 	    leg_moves = getLegalBuyMonster(state);
 	}
 	else if (last_move instanceof RespondMove){
@@ -86,7 +100,7 @@ public class GameRules{
 	Move last_move = state.getLastMove();
 	boolean answer = false;
 	
-	if( last_move instanceof PlaceMonsterMove ){
+	if( last_move == null || last_move instanceof PlaceMonsterMove ){
 	    List<Move> legal = getLegalMoves(state);
 	    for( Move leg_mov : legal ){
 		if (leg_mov instanceof BuyMonsterMove){
@@ -150,17 +164,14 @@ public class GameRules{
 	    
     //Note: You can choose any public monster
     // Price must be less than your coins
-    static List<Move> getLegalBuyMonster(GameState state)
-	{
+    static List<Move> getLegalBuyMonster(GameState state){
 	System.out.println("Get Legal Buy Monster");
 	List<Move> leg_moves = new ArrayList<Move>();
 	PlayerID play = state.getCurPlayer();
 	List<Monster> pub_mons = state.getPublicMonsters();
-	
 	int coins = state.getCoins(play);
 
-	for(Monster mon : pub_mons)
-	{
+	for(Monster mon : pub_mons){
 	    for(int i = 1; i<= coins; i++){
 		leg_moves.add( new BuyMonsterMove(play, i, mon) );
 	    }
@@ -295,25 +306,16 @@ public class GameRules{
 
 	if( state.getHidden(PlayerID.TOP) == cas ){
 	    state.addMonster(cas, PlayerID.TOP, Monster.DRAGON);
-		state.DragonRevealed((PlayerID.TOP));
 	}
 	if(state.getHidden(PlayerID.BOT) == cas){
 	    state.addMonster(cas, PlayerID.BOT,  Monster.DRAGON);
-		state.DragonRevealed((PlayerID.BOT));
 	}
-	
-	if( state.getMonsters(cas, PlayerID.TOP).contains( Monster.SLAYER) ){
-	    state.removeMonster(cas, PlayerID.BOT, Monster.DRAGON);
-	    state.addMonster(cas, PlayerID.BOT, Monster.DEAD);
-	}
-	if( state.getMonsters(cas, PlayerID.BOT).contains( Monster.SLAYER) ){
-	    state.removeMonster(cas, PlayerID.TOP, Monster.DRAGON);
-	    state.addMonster(cas, PlayerID.TOP, Monster.DEAD);
-	}
-
 		
 	List<Monster> top_mons = state.getMonsters(cas, PlayerID.TOP);
 	List<Monster> bot_mons = state.getMonsters(cas, PlayerID.BOT);
+	
+	handleDragons(top_mons, bot_mons);
+	handleDragons(bot_mons, top_mons);
 	int top_total = 0;
 	int bot_total = 0;
 
@@ -343,4 +345,24 @@ public class GameRules{
 	return state;
 
     }
+
+    //This function mutates the lists that it gets as input!!
+    //I am changing a state by changing the monster lists -- beware!
+    static void handleDragons(List<Monster> slay_mons, List<Monster> drag_mons){
+	int slay_count = 0;
+	
+	for(Monster mon: slay_mons){
+	    if (mon == Monster.SLAYER){
+		slay_count = slay_count + 1;
+	    }
+	}
+
+	for(int i=0; i<slay_count; i++){
+	    if(drag_mons.contains(Monster.DRAGON) ){
+		drag_mons.remove(Monster.DRAGON);
+		drag_mons.add(Monster.DEAD);
+	    }
+	}
+    }
+
 }
