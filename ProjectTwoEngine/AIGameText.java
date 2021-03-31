@@ -39,7 +39,7 @@ public class AIGameText{
 
 	//Call the Start Game Functions
 	GameState s = new GameState(state, PlayerID.TOP);
-	System.out.println(s.getDeckSize());
+
 	TOP_Player.begin( new GameState(state, PlayerID.TOP) );
 	BOT_Player.begin( new GameState(state, PlayerID.BOT) );
 

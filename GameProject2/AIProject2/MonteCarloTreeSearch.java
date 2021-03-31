@@ -17,6 +17,14 @@ public class MonteCarloTreeSearch
 
     public Move findNextMove(GameState state, PlayerID curPlayer)
     {
+        //replaces the null deck with a hypotetical deck
+        if(state.getDeck() == null)
+        {
+            List<Monster> curDeck = MontePythonAI.generateDeck(state);
+            state.setDeck(curDeck);
+        }
+       
+
         opponent = GameRules.otherPlayer(curPlayer);
         Tree tree = new Tree(new Node(state, null, opponent));
         Node rootNode = tree.getRoot();

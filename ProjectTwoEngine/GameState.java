@@ -404,11 +404,11 @@ public class GameState
 	last_move = state.getLastMove();
 
 		if(play == PlayerID.TOP){
-			//deck_monsters = null;
+			deck_monsters = null;
 			bot_hidden = null;
 		}
 		if(play == PlayerID.BOT){
-			//deck_monsters = null;
+			deck_monsters = null;
 			top_hidden = null;
 		}
 		}

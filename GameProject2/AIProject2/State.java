@@ -187,7 +187,7 @@ public class State
             else if(oppPlayerCastles > curPlayerCastles)
                 return GameRules.otherPlayer(curPlayer);
             else
-                return PlayerID.DRAW;
+                return GameRules.otherPlayer(curPlayer);   //consider you lose in the case of a draw
         }
         else
             return null;
