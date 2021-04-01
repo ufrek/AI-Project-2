@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class DeckFactory{
+public class DeckFactory
+{
 
-    public static List<Monster> createDeck(){
+    public static List<Monster> createDeck()
+	{
 	List<Monster> deck = new ArrayList<Monster>();
 
 	for(int i=0; i<5; i++){

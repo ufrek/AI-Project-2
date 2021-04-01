@@ -108,8 +108,9 @@ class GameDisplayGraphics{
 	}
 	gc.strokeText("Next Monster:", 900, 125 + i*50);
 	Monster next_mon = state.getNextMonster();
-	gc.fillText(d_str(next_mon), 900, 125 + (i+1)*50);
-	
+	if(next_mon != null){
+	    gc.fillText(d_str(next_mon), 900, 125 + (i+1)*50);
+	}
 
 	// Write Coins
 	gc.setStroke(Color.BLUE);
@@ -121,7 +122,7 @@ class GameDisplayGraphics{
 	gc.fillText(coin_str + " Coins", 900, 225 + (i+2)*50);
 	coin_str = String.valueOf(state.getCoins(PlayerID.BOT));
 	gc.fillText(coin_str + " Coins", 900, 225 + (i+4)*50);
-
+	
 	displayCastle(state, CastleID.CastleA, 25);
 	displayCastle(state, CastleID.CastleB, 300);
 	displayCastle(state, CastleID.CastleC, 575);

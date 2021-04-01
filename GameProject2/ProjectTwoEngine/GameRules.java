@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class GameRules{
 
-	 static PlayerID otherPlayer(PlayerID p){
+    static PlayerID otherPlayer(PlayerID p){
 	if (p == PlayerID.TOP){
 	    return PlayerID.BOT;
 	}
@@ -275,14 +275,23 @@ public class GameRules{
 
 	//First we remove the monster from the public monsters
 	new_state.removePublicMonster(mon);
-	if (state.getNextMonster() != null){
+	if (state.getNextMonster() != null)
+	{	
+		System.out.println("No top monster");
 	    new_state.addPublicMonster( new_state.getNextMonster() );
 	}
-	if (new_state.getDeck().size() != 0){
+	
+	if (new_state.getDeck().size() != 0)
+	{
+
 	    List<Monster> deck = new_state.getDeck();
 	    Monster next_mon = deck.remove(0);
 	    new_state.setDeck(deck);
 	    new_state.setNextMonster(next_mon);
+	}
+	else {
+		System.out.println("Deck Empty");
+	    new_state.setNextMonster(null);
 	}
 
 	//Next we place the monster and do a battle if needed
@@ -342,6 +351,10 @@ public class GameRules{
 	    }
 	}
 
+	if (isGameOver(state)){
+	    state.game_over = true;
+	}
+		
 	return state;
 
     }

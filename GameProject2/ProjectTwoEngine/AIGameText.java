@@ -3,15 +3,15 @@
 package ProjectTwoEngine;
 
 import java.util.List;
+import java.util.Random;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import AIProject2.*;
 
-import GameProject2.AIProject2.MontePythonAI;
 
-public class AIGameText
-{
+public class AIGameText{
     // Change this file name to change where the moves are written
     static final String FILE_NAME = "transcript.txt";
     
@@ -20,7 +20,8 @@ public class AIGameText
     
     static GameState state;
     
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException
+	 {
 	//IMPORTANT : Change these lines to change who is playing!
 	TOP_Player = new MontePythonAI();
 	BOT_Player = new RandomPlayer();	
@@ -39,9 +40,6 @@ public class AIGameText
 	System.out.println("File created successfully");
 
 	//Call the Start Game Functions
-
-	GameState s = new GameState(state, PlayerID.TOP);
-
 	TOP_Player.begin( new GameState(state, PlayerID.TOP) );
 	BOT_Player.begin( new GameState(state, PlayerID.BOT) );
 

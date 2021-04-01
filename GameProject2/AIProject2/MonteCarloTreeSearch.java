@@ -1,4 +1,4 @@
-package GameProject2.AIProject2;
+package AIProject2;
 
 import java.util.Random;
 
@@ -25,6 +25,7 @@ public class MonteCarloTreeSearch
             List<Monster> curDeck = MontePythonAI.generateDeck(state);
             state.setDeck(curDeck);
         }
+        
      
         opponent = otherPlayer(curPlayer);
         Tree tree = new Tree(new Node(state, null, opponent));
@@ -134,6 +135,8 @@ public class MonteCarloTreeSearch
     {
         Node tempNode = new Node(node);
         State tempState = tempNode.getState();
+       
+
         PlayerID endGameVictor = tempState.checkStatus(curPlayer);       ///make sure this returns player id
         if (endGameVictor == opponent) 
         {
@@ -141,10 +144,12 @@ public class MonteCarloTreeSearch
             return endGameVictor;
         }
         GameState gs = tempState.getGs();                               //could maybe play off of the temp node?
+        List<Monster> newDeck = MontePythonAI.generateDeck(gs);
+        gs.setDeck(newDeck);
         while (!isGameOver(gs) && endGameVictor == null)                    
         {
             gs = tempState.randomPlay(gs);
-            Move m = tempState.getMove();
+            Move m = gs.getLastMove();//tempState.getMove();
             tempState = new State(m, gs, gs.getCurPlayer());
             endGameVictor = tempState.checkStatus(curPlayer);
         }

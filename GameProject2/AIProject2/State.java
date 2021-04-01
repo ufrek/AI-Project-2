@@ -1,4 +1,4 @@
-package GameProject2.AIProject2;
+package AIProject2;
 
 import ProjectTwoEngine.*;
 
@@ -21,7 +21,7 @@ public class State
     public State(Move m, GameState gs, PlayerID curPlayer)   //visitCount
     {
         this.lastMove = m;
-        this.gs = gs;
+        this.gs = new GameState(gs);
         this.curPlayer = curPlayer;
         rand = new Random();
     }
@@ -44,7 +44,6 @@ public class State
     public List<State> getAllPossibleBuySuccessors(GameState gs)                
     {
         List<State> successorStates = new ArrayList<State>();
-
         GameState gsCopy = new GameState(gs);
         //System.out.println("Stuck");
         List<Move> buyMoves = GameRules.getLegalMoves(gsCopy);
@@ -120,6 +119,7 @@ public class State
 
     public GameState  RandomBuyMonster(GameState state)
     {
+        System.out.println(state.getPublicMonsters().size());
         List<Move> leg_moves = GameRules.getLegalMoves(state);
         
         int i = rand.nextInt(leg_moves.size());

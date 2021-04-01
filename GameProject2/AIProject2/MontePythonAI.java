@@ -1,4 +1,4 @@
-package GameProject2.AIProject2;
+package AIProject2;
 
 import java.util.Random;
 
@@ -37,7 +37,8 @@ public class MontePythonAI implements Player
     //This function is called when the player must select a monster to buy
     public BuyMonsterMove getBuyMonster(GameState state)
     {
-	   return (BuyMonsterMove) montey.findNextMove(state, state.getCurPlayer());
+
+	   return (BuyMonsterMove) montey.findNextMove(new GameState(state), state.getCurPlayer());
     }
 
     //This function is called at the start of your opponent's turn
@@ -49,7 +50,7 @@ public class MontePythonAI implements Player
     public RespondMove getRespond(GameState state, Monster mon, int price)
     {
         
-        return (RespondMove) montey.findNextMove(state, state.getCurPlayer());
+        return (RespondMove) montey.findNextMove(new GameState(state), state.getCurPlayer());
     }
     
     
@@ -62,7 +63,7 @@ public class MontePythonAI implements Player
     public PlaceMonsterMove getPlace(GameState state, Monster mon)
     {
        
-        return (PlaceMonsterMove) montey.findNextMove(state, state.getCurPlayer());
+        return (PlaceMonsterMove) montey.findNextMove(new GameState(state), state.getCurPlayer());
     }
 
     public String getPlayName()
@@ -70,7 +71,7 @@ public class MontePythonAI implements Player
 	    return "MontePython Searcher";
     }
 
-     //doesn't use old gameDeck as a basis, might not work properly
+     
      public static List<Monster> generateDeck(GameState state)
      {
          List<Monster> outDeck = DeckFactory.createDeck();
@@ -80,7 +81,7 @@ public class MontePythonAI implements Player
          {
              outDeck.remove(monster);
          }
- 
+        
          for(CastleID cas : CastleID.values())
          {
              List<Monster> topMon = new ArrayList<Monster>(state.getMonsters(cas, PlayerID.TOP));
@@ -88,16 +89,17 @@ public class MontePythonAI implements Player
              List<Monster> botMon = new ArrayList<Monster>(state.getMonsters(cas, PlayerID.BOT));
  
              //if the castle is won, remove the extra dragon before counting monsters that came out of the deck
-             if(state.getCastleWon(cas) != null)
+             if(state.getCastleWon(cas) != null) //not properly counting the player's 
              {
-                 if(topMon.size() > 4)           
+                 if(state.getHidden(PlayerID.TOP) == cas)
                  {
-                     topMon.remove(4);
+                     topMon.remove(Monster.DRAGON);
                  }
-                 if(botMon.size() > 4)
+                 if(state.getHidden(PlayerID.BOT) == cas)
                  {
-                     botMon.remove(4);
+                     botMon.remove(Monster.DRAGON);
                  }
+                 
              }
  
              for (Monster monster : topMon) 
@@ -109,6 +111,7 @@ public class MontePythonAI implements Player
                  outDeck.remove(monster);    
              }      
          }
+         System.out.println("After catle removal: " + outDeck.size());
          Collections.shuffle(outDeck);
          return outDeck;
      }

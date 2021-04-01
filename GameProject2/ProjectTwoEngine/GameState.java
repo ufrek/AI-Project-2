@@ -33,8 +33,7 @@ public class GameState {
 
     Move last_move;
     
-    static public GameState concedeState(GameState old, PlayerID play)
-	{
+    static public GameState concedeState(GameState old, PlayerID play){
 	GameState state = new GameState(old);
 
 	if(play == PlayerID.TOP){
@@ -286,8 +285,7 @@ public class GameState {
     
 
     // Deep Copy Constructor
-    public GameState(GameState state)
-	{
+    public GameState(GameState state){
 	top_monsters = new HashMap<CastleID, List<Monster> >();
 	bot_monsters = new HashMap<CastleID, List<Monster> >();
 
@@ -334,17 +332,30 @@ public class GameState {
 
     // Copies a state and removes hidden information
     // This is used before handing a state to a player
-    public GameState(GameState old_state, PlayerID play)
-	{
+    public GameState(GameState old_state, PlayerID play){
 	this(old_state);
 
 	if(play == PlayerID.TOP){
 	    deck_monsters = null;
-	    bot_hidden = null;
+
+	    CastleID opp_hide = old_state.getHidden(PlayerID.BOT);
+	    if (old_state.getCastleWon( opp_hide) == null){ 
+		bot_hidden = null;
+	    }
+	    else{
+		bot_hidden = opp_hide;
+	    }
 	}
 	if(play == PlayerID.BOT){
 	    deck_monsters = null;
-	    top_hidden = null;
+
+	    CastleID opp_hide = old_state.getHidden(PlayerID.TOP);
+	    if (old_state.getCastleWon( opp_hide) == null){ 
+		bot_hidden = null;
+	    }
+	    else{
+		bot_hidden = opp_hide;
+	    }
 	}
     }
 				

@@ -1,4 +1,0 @@
-//TO DO: state.getallPossible states, maybe make the turn play out a certain way
-
-//expand node should have another method for the opponent to respond 
-//and another node for when the player moves gain....maybe put this in the main loop of the function

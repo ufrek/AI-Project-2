@@ -1,4 +1,4 @@
-package GameProject2.AIProject2;
+package AIProject2;
 
 import ProjectTwoEngine.*;
 
