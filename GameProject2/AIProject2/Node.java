@@ -46,7 +46,7 @@ public class Node
     }
     public boolean isOver()
     {
-        return  GameRules.isGameOver(state.getGs());
+        return  MonteCarloTreeSearch.isGameOver(state.getGs());
     }
     public State getState() {
         return state;

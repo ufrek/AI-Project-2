@@ -170,7 +170,7 @@ public class State
     //returns null if game is still playing, otherwise returns winner/draw
     public PlayerID checkStatus(PlayerID curPlayer)
     {
-        if(GameRules.isGameOver(this.gs))
+        if(MonteCarloTreeSearch.isGameOver(this.gs))
         {
             int curPlayerCastles = 0;
             int oppPlayerCastles = 0;
@@ -185,9 +185,9 @@ public class State
             if(curPlayerCastles > oppPlayerCastles)
                 return curPlayer;
             else if(oppPlayerCastles > curPlayerCastles)
-                return GameRules.otherPlayer(curPlayer);
+                return MonteCarloTreeSearch.otherPlayer(curPlayer);
             else
-                return GameRules.otherPlayer(curPlayer);   //consider you lose in the case of a draw
+                return MonteCarloTreeSearch.otherPlayer(curPlayer);  //draws are a loss
         }
         else
             return null;
