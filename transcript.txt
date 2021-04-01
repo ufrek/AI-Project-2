@@ -1,0 +1,361 @@
+Top Player is: Random Player
+Bot Player is: Random Player
+
+
+----------------------
+Player BOT Start Turn
+TOP has 4 coins
+BOT has 6 coins
+Publicy Available Monsters: 
+--- Gryphon 5
+--- Gryphon 5
+--- Wolf 2
+--- Dragon 6
+Attempt to Buy:
+--- Gryphon 5
+--- For the price of: 4
+Opponent Steals.
+Player TOP Gets to Place
+--- Gryphon is placed at CastleC
+
+
+----------------------
+Player TOP Start Turn
+TOP has 3 coins
+BOT has 10 coins
+Publicy Available Monsters: 
+--- Gryphon 5
+--- Wolf 2
+--- Dragon 6
+--- Giant 4
+Attempt to Buy:
+--- Giant 4
+--- For the price of: 2
+Opponent Steals.
+Player BOT Gets to Place
+--- Giant is placed at CastleC
+
+
+----------------------
+Player BOT Start Turn
+TOP has 5 coins
+BOT has 11 coins
+Publicy Available Monsters: 
+--- Gryphon 5
+--- Wolf 2
+--- Dragon 6
+--- Wolf 2
+Attempt to Buy:
+--- Dragon 6
+--- For the price of: 2
+Opponent Steals.
+Player TOP Gets to Place
+--- Dragon is placed at CastleA
+
+
+----------------------
+Player TOP Start Turn
+TOP has 6 coins
+BOT has 13 coins
+Publicy Available Monsters: 
+--- Gryphon 5
+--- Wolf 2
+--- Wolf 2
+--- Dragon 6
+Attempt to Buy:
+--- Dragon 6
+--- For the price of: 4
+Opponent Passes.
+Player TOP Gets to Place
+--- Dragon is placed at CastleC
+
+
+----------------------
+Player BOT Start Turn
+TOP has 2 coins
+BOT has 16 coins
+Publicy Available Monsters: 
+--- Gryphon 5
+--- Wolf 2
+--- Wolf 2
+--- Slayer 1
+Attempt to Buy:
+--- Wolf 2
+--- For the price of: 4
+Opponent Passes.
+Player BOT Gets to Place
+--- Wolf is placed at CastleB
+
+
+----------------------
+Player TOP Start Turn
+TOP has 5 coins
+BOT has 12 coins
+Publicy Available Monsters: 
+--- Gryphon 5
+--- Wolf 2
+--- Slayer 1
+--- War Lion 3
+Attempt to Buy:
+--- Gryphon 5
+--- For the price of: 4
+Opponent Passes.
+Player TOP Gets to Place
+--- Gryphon is placed at CastleB
+
+
+----------------------
+Player BOT Start Turn
+TOP has 1 coins
+BOT has 15 coins
+Publicy Available Monsters: 
+--- Wolf 2
+--- Slayer 1
+--- War Lion 3
+--- Giant 4
+Attempt to Buy:
+--- Wolf 2
+--- For the price of: 3
+Opponent Passes.
+Player BOT Gets to Place
+--- Wolf is placed at CastleC
+
+
+----------------------
+Player TOP Start Turn
+TOP has 4 coins
+BOT has 12 coins
+Publicy Available Monsters: 
+--- Slayer 1
+--- War Lion 3
+--- Giant 4
+--- Slayer 1
+Attempt to Buy:
+--- Slayer 1
+--- For the price of: 3
+Opponent Passes.
+Player TOP Gets to Place
+--- Slayer is placed at CastleB
+
+
+----------------------
+Player BOT Start Turn
+TOP has 1 coins
+BOT has 15 coins
+Publicy Available Monsters: 
+--- War Lion 3
+--- Giant 4
+--- Slayer 1
+--- War Lion 3
+Attempt to Buy:
+--- War Lion 3
+--- For the price of: 8
+Opponent Passes.
+Player BOT Gets to Place
+--- War Lion is placed at CastleB
+
+
+----------------------
+Player TOP Start Turn
+TOP has 4 coins
+BOT has 7 coins
+Publicy Available Monsters: 
+--- Giant 4
+--- Slayer 1
+--- War Lion 3
+--- War Lion 3
+Attempt to Buy:
+--- Giant 4
+--- For the price of: 1
+Opponent Passes.
+Player TOP Gets to Place
+--- Giant is placed at CastleB
+
+
+----------------------
+Player BOT Start Turn
+TOP has 3 coins
+BOT has 10 coins
+Publicy Available Monsters: 
+--- Slayer 1
+--- War Lion 3
+--- War Lion 3
+--- Wolf 2
+Attempt to Buy:
+--- Wolf 2
+--- For the price of: 3
+Opponent Steals.
+Player TOP Gets to Place
+--- Wolf is placed at CastleB
+
+
+----------------------
+Player TOP Start Turn
+TOP has 3 coins
+BOT has 13 coins
+Publicy Available Monsters: 
+--- Slayer 1
+--- War Lion 3
+--- War Lion 3
+--- War Lion 3
+Attempt to Buy:
+--- War Lion 3
+--- For the price of: 1
+Opponent Passes.
+Player TOP Gets to Place
+--- War Lion is placed at CastleC
+
+
+----------------------
+Player BOT Start Turn
+TOP has 2 coins
+BOT has 16 coins
+Publicy Available Monsters: 
+--- Slayer 1
+--- War Lion 3
+--- War Lion 3
+--- Wolf 2
+Attempt to Buy:
+--- War Lion 3
+--- For the price of: 1
+Opponent Passes.
+Player BOT Gets to Place
+--- War Lion is placed at CastleA
+
+
+----------------------
+Player TOP Start Turn
+TOP has 5 coins
+BOT has 15 coins
+Publicy Available Monsters: 
+--- Slayer 1
+--- War Lion 3
+--- Wolf 2
+--- Gryphon 5
+Attempt to Buy:
+--- War Lion 3
+--- For the price of: 1
+Opponent Steals.
+Player BOT Gets to Place
+--- War Lion is placed at CastleC
+
+
+----------------------
+Player BOT Start Turn
+TOP has 6 coins
+BOT has 17 coins
+Publicy Available Monsters: 
+--- Slayer 1
+--- Wolf 2
+--- Gryphon 5
+--- Giant 4
+Attempt to Buy:
+--- Giant 4
+--- For the price of: 9
+Opponent Passes.
+Player BOT Gets to Place
+--- Giant is placed at CastleA
+
+
+----------------------
+Player TOP Start Turn
+TOP has 9 coins
+BOT has 8 coins
+Publicy Available Monsters: 
+--- Slayer 1
+--- Wolf 2
+--- Gryphon 5
+--- Gryphon 5
+Attempt to Buy:
+--- Slayer 1
+--- For the price of: 9
+Opponent Passes.
+Player TOP Gets to Place
+--- Slayer is placed at CastleA
+
+
+----------------------
+Player BOT Start Turn
+TOP has 0 coins
+BOT has 11 coins
+Publicy Available Monsters: 
+--- Wolf 2
+--- Gryphon 5
+--- Gryphon 5
+--- Giant 4
+Attempt to Buy:
+--- Gryphon 5
+--- For the price of: 2
+Opponent Passes.
+Player BOT Gets to Place
+--- Gryphon is placed at CastleA
+
+
+----------------------
+Player TOP Start Turn
+TOP has 3 coins
+BOT has 9 coins
+Publicy Available Monsters: 
+--- Wolf 2
+--- Gryphon 5
+--- Giant 4
+--- Giant 4
+Attempt to Buy:
+--- Wolf 2
+--- For the price of: 2
+Opponent Passes.
+Player TOP Gets to Place
+--- Wolf is placed at CastleC
+
+
+----------------------
+Player BOT Start Turn
+TOP has 1 coins
+BOT has 12 coins
+Publicy Available Monsters: 
+--- Gryphon 5
+--- Giant 4
+--- Giant 4
+--- War Lion 3
+Attempt to Buy:
+--- Gryphon 5
+--- For the price of: 12
+Opponent Passes.
+Player BOT Gets to Place
+--- Gryphon is placed at CastleA
+
+*************************
+Game Over
+
+CastleA Won By BOT
+Top Monsters Are: 
+--- Dragon 6
+--- Slayer 1
+Bot Monsters Are: 
+--- War Lion 3
+--- Giant 4
+--- Gryphon 5
+--- Gryphon 5
+--- Dragon 6
+
+CastleB Won By TOP
+Top Monsters Are: 
+--- Gryphon 5
+--- Slayer 1
+--- Giant 4
+--- Wolf 2
+--- Dragon 6
+Bot Monsters Are: 
+--- Wolf 2
+--- War Lion 3
+
+CastleC Won By TOP
+Top Monsters Are: 
+--- Gryphon 5
+--- Dragon 6
+--- War Lion 3
+--- Wolf 2
+Bot Monsters Are: 
+--- Giant 4
+--- Wolf 2
+--- War Lion 3

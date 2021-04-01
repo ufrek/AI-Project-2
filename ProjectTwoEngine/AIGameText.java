@@ -8,7 +8,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class AIGameText{
+public class AIGameText
+{
     // Change this file name to change where the moves are written
     static final String FILE_NAME = "transcript.txt";
     
@@ -38,7 +39,6 @@ public class AIGameText{
 	//Call the Start Game Functions
 
 	GameState s = new GameState(state, PlayerID.TOP);
-	System.out.println(s.getDeckSize());
 
 	TOP_Player.begin( new GameState(state, PlayerID.TOP) );
 	BOT_Player.begin( new GameState(state, PlayerID.BOT) );
