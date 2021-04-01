@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
 
-public class GameState {
+public class GameState 
+{
     Map<CastleID, List<Monster> > top_monsters;
     Map<CastleID, List<Monster> > bot_monsters;
 
@@ -31,10 +32,13 @@ public class GameState {
     String top_name;
     String bot_name;
 
-    Move last_move;
+    Move last_move = null;
+
+	//flags for if the dragons are revealed
+	boolean isBotOppDragonKnown = false;
+	boolean isTopOppDragonKnown = false;
     
-    static public GameState concedeState(GameState old, PlayerID play)
-	{
+    static public GameState concedeState(GameState old, PlayerID play){
 	GameState state = new GameState(old);
 
 	if(play == PlayerID.TOP){
@@ -47,8 +51,6 @@ public class GameState {
 	    state.setCastleWon(CastleID.CastleB, PlayerID.TOP);
 	    state.setCastleWon(CastleID.CastleC, PlayerID.TOP);
 	}
-	state.game_over = true;
-	
 	return state;
     }
 
@@ -100,6 +102,29 @@ public class GameState {
 	}
 	return answer;
     }
+
+	//will tell you if the hidden dragon is known, probably not done the best way
+	public CastleID getOppHiddenDragon(PlayerID play)
+	{
+		CastleID answer = null;
+		if(isBotOppDragonKnown && play == PlayerID.TOP){
+			return bot_hidden;
+		}
+		if(isTopOppDragonKnown && play == PlayerID.BOT)
+		{
+			return top_hidden;
+		}
+		return answer;
+	}
+
+	public void DragonRevealed(PlayerID play)
+	{
+		if(play == PlayerID.TOP)
+			isTopOppDragonKnown = true;
+		if(play == PlayerID.BOT)
+			isBotOppDragonKnown = true;
+
+	}
 
     public void setHidden(PlayerID play, CastleID cas){
 	if(play == PlayerID.TOP){
@@ -286,8 +311,7 @@ public class GameState {
     
 
     // Deep Copy Constructor
-    public GameState(GameState state)
-	{
+    public GameState(GameState state){
 	top_monsters = new HashMap<CastleID, List<Monster> >();
 	bot_monsters = new HashMap<CastleID, List<Monster> >();
 
@@ -334,18 +358,59 @@ public class GameState {
 
     // Copies a state and removes hidden information
     // This is used before handing a state to a player
-    public GameState(GameState old_state, PlayerID play)
+    public GameState(GameState state, PlayerID play)
 	{
-	this(old_state);
+		top_monsters = new HashMap<CastleID, List<Monster> >();
+	bot_monsters = new HashMap<CastleID, List<Monster> >();
 
-	if(play == PlayerID.TOP){
-	    deck_monsters = null;
-	    bot_hidden = null;
-	}
-	if(play == PlayerID.BOT){
-	    deck_monsters = null;
-	    top_hidden = null;
-	}
-    }
+	List<Monster> temp_mon = new ArrayList<Monster>(state.getMonsters(CastleID.CastleA, PlayerID.TOP));
+	top_monsters.put(CastleID.CastleA, temp_mon );
+	
+	temp_mon = new ArrayList<Monster>(state.getMonsters(CastleID.CastleB, PlayerID.TOP));
+	top_monsters.put(CastleID.CastleB, temp_mon );
+
+	temp_mon = new ArrayList<Monster>(state.getMonsters(CastleID.CastleC, PlayerID.TOP));
+	top_monsters.put(CastleID.CastleC, temp_mon );
+	
+	temp_mon = new ArrayList<Monster>(state.getMonsters(CastleID.CastleA, PlayerID.BOT));
+        bot_monsters.put(CastleID.CastleA, temp_mon );
+	
+	temp_mon = new ArrayList<Monster>(state.getMonsters(CastleID.CastleB, PlayerID.BOT));
+	bot_monsters.put(CastleID.CastleB, temp_mon );
+
+	temp_mon = new ArrayList<Monster>(state.getMonsters(CastleID.CastleC, PlayerID.BOT));
+	bot_monsters.put(CastleID.CastleC, temp_mon );
+
+	castle_won = new HashMap<CastleID, PlayerID>();
+	castle_won.put(CastleID.CastleA, state.getCastleWon(CastleID.CastleA) );
+	castle_won.put(CastleID.CastleB, state.getCastleWon(CastleID.CastleB));
+	castle_won.put(CastleID.CastleC, state.getCastleWon(CastleID.CastleC));
+	
+	top_name = state.getPlayName(PlayerID.TOP);
+	bot_name = state.getPlayName(PlayerID.BOT);
+
+	top_coins = state.getCoins(PlayerID.TOP);
+	bot_coins = state.getCoins(PlayerID.BOT);
+	top_hidden = state.getHidden(PlayerID.TOP);
+	bot_hidden = state.getHidden(PlayerID.BOT);
+
+        top_turn = state.isTopTurn();
+	game_over = state.isGameOver();
+
+	public_monsters = new ArrayList<Monster>(state.getPublicMonsters());
+	next_monster = state.getNextMonster();
+	deck_monsters = state.getDeck();
+
+	last_move = state.getLastMove();
+
+		if(play == PlayerID.TOP){
+			deck_monsters = null;
+			bot_hidden = null;
+		}
+		if(play == PlayerID.BOT){
+			deck_monsters = null;
+			top_hidden = null;
+		}
+		}
 				
 }

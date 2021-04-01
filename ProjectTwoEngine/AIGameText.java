@@ -8,6 +8,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+import GameProject2.AIProject2.MontePythonAI;
+
 public class AIGameText{
     // Change this file name to change where the moves are written
     static final String FILE_NAME = "transcript.txt";
@@ -19,11 +21,11 @@ public class AIGameText{
     
     public static void main(String[] args) throws IOException {
 	//IMPORTANT : Change these lines to change who is playing!
-	TOP_Player = new RandomPlayer();
+	TOP_Player = new MontePythonAI();
 	BOT_Player = new RandomPlayer();	
       
 	state = new GameState(TOP_Player.getPlayName(), BOT_Player.getPlayName());
-
+	
 	BufferedWriter file_out = new BufferedWriter(new FileWriter( FILE_NAME ));
 	file_out.write("Top Player is: ");
 	file_out.write(TOP_Player.getPlayName());
@@ -36,12 +38,15 @@ public class AIGameText{
 	System.out.println("File created successfully");
 
 	//Call the Start Game Functions
+	GameState s = new GameState(state, PlayerID.TOP);
+
 	TOP_Player.begin( new GameState(state, PlayerID.TOP) );
 	BOT_Player.begin( new GameState(state, PlayerID.BOT) );
 
-	while (! GameRules.isGameOver(state)){
+	while (! GameRules.isGameOver(state))
+	{
 		PlayerID cur_player = state.getCurPlayer();
-
+		System.out.println("Turn: " + state.getCurPlayer());
 		file_out.newLine();
 		file_out.newLine();
 		file_out.write("----------------------");
@@ -155,7 +160,7 @@ public class AIGameText{
 
 	for(CastleID cas : CastleID.values()){
 	    file_out.newLine();
-	    file_out.write(cas.name() + " Won By "+ state.getCastleWon(cas).name());
+	    file_out.write(cas.name() + " Won By "+ state.getCastleWon(CastleID.CastleA).name());
 	    file_out.newLine();
 	    top_mons = state.getMonsters(cas, PlayerID.TOP);
 	    bot_mons = state.getMonsters(cas, PlayerID.BOT);
