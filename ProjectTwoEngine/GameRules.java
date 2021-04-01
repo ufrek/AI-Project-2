@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class GameRules{
 
-    static PlayerID otherPlayer(PlayerID p){
+	 static PlayerID otherPlayer(PlayerID p){
 	if (p == PlayerID.TOP){
 	    return PlayerID.BOT;
 	}

@@ -26,7 +26,7 @@ public class MonteCarloTreeSearch
             state.setDeck(curDeck);
         }
      
-        opponent = GameRules.otherPlayer(curPlayer);
+        opponent = otherPlayer(curPlayer);
         Tree tree = new Tree(new Node(state, null, opponent));
         Node rootNode = tree.getRoot();
         //figure out how to expand the node ------can clean this up a bit I suppose
@@ -141,7 +141,7 @@ public class MonteCarloTreeSearch
             return endGameVictor;
         }
         GameState gs = tempState.getGs();                               //could maybe play off of the temp node?
-        while (!GameRules.isGameOver(gs) && endGameVictor == null)                    
+        while (!isGameOver(gs) && endGameVictor == null)                    
         {
             gs = tempState.randomPlay(gs);
             Move m = tempState.getMove();
@@ -151,5 +151,29 @@ public class MonteCarloTreeSearch
         System.out.print(endGameVictor);
         return endGameVictor;
     }
+
+    public static PlayerID otherPlayer(PlayerID p)
+    {
+        if (p == PlayerID.TOP){
+            return PlayerID.BOT;
+        }
+        else{
+            return PlayerID.TOP;
+        }
+        }
+
+        static boolean isGameOver(GameState state){
+            boolean done = true;
+            if (state.getCastleWon(CastleID.CastleA) == null){
+                done = false;
+            }
+            if (state.getCastleWon(CastleID.CastleB) == null){
+                done = false;
+            }
+            if (state.getCastleWon(CastleID.CastleC) == null){
+                done = false;
+            }
+            return done;
+            }
     
 }

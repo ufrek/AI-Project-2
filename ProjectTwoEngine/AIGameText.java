@@ -8,6 +8,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+import GameProject2.AIProject2.MontePythonAI;
+
 public class AIGameText
 {
     // Change this file name to change where the moves are written
@@ -20,7 +22,7 @@ public class AIGameText
     
     public static void main(String[] args) throws IOException {
 	//IMPORTANT : Change these lines to change who is playing!
-	TOP_Player = new RandomPlayer();
+	TOP_Player = new MontePythonAI();
 	BOT_Player = new RandomPlayer();	
       
 	state = new GameState(TOP_Player.getPlayName(), BOT_Player.getPlayName());
