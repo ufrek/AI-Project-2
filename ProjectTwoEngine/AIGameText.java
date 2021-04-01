@@ -36,6 +36,11 @@ public class AIGameText{
 	System.out.println("File created successfully");
 
 	//Call the Start Game Functions
+<<<<<<< HEAD
+=======
+	GameState s = new GameState(state, PlayerID.TOP);
+	System.out.println(s.getDeckSize());
+>>>>>>> parent of 59cbcb1 (Deck Generation Works now)
 	TOP_Player.begin( new GameState(state, PlayerID.TOP) );
 	BOT_Player.begin( new GameState(state, PlayerID.BOT) );
 

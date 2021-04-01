@@ -338,6 +338,7 @@ public class GameState {
 	{
 	this(old_state);
 
+<<<<<<< HEAD
 	if(play == PlayerID.TOP){
 	    deck_monsters = null;
 	    bot_hidden = null;
@@ -347,5 +348,56 @@ public class GameState {
 	    top_hidden = null;
 	}
     }
+=======
+	List<Monster> temp_mon = new ArrayList<Monster>(state.getMonsters(CastleID.CastleA, PlayerID.TOP));
+	top_monsters.put(CastleID.CastleA, temp_mon );
+	
+	temp_mon = new ArrayList<Monster>(state.getMonsters(CastleID.CastleB, PlayerID.TOP));
+	top_monsters.put(CastleID.CastleB, temp_mon );
+
+	temp_mon = new ArrayList<Monster>(state.getMonsters(CastleID.CastleC, PlayerID.TOP));
+	top_monsters.put(CastleID.CastleC, temp_mon );
+	
+	temp_mon = new ArrayList<Monster>(state.getMonsters(CastleID.CastleA, PlayerID.BOT));
+        bot_monsters.put(CastleID.CastleA, temp_mon );
+	
+	temp_mon = new ArrayList<Monster>(state.getMonsters(CastleID.CastleB, PlayerID.BOT));
+	bot_monsters.put(CastleID.CastleB, temp_mon );
+
+	temp_mon = new ArrayList<Monster>(state.getMonsters(CastleID.CastleC, PlayerID.BOT));
+	bot_monsters.put(CastleID.CastleC, temp_mon );
+
+	castle_won = new HashMap<CastleID, PlayerID>();
+	castle_won.put(CastleID.CastleA, state.getCastleWon(CastleID.CastleA) );
+	castle_won.put(CastleID.CastleB, state.getCastleWon(CastleID.CastleB));
+	castle_won.put(CastleID.CastleC, state.getCastleWon(CastleID.CastleC));
+	
+	top_name = state.getPlayName(PlayerID.TOP);
+	bot_name = state.getPlayName(PlayerID.BOT);
+
+	top_coins = state.getCoins(PlayerID.TOP);
+	bot_coins = state.getCoins(PlayerID.BOT);
+	top_hidden = state.getHidden(PlayerID.TOP);
+	bot_hidden = state.getHidden(PlayerID.BOT);
+
+        top_turn = state.isTopTurn();
+	game_over = state.isGameOver();
+
+	public_monsters = new ArrayList<Monster>(state.getPublicMonsters());
+	next_monster = state.getNextMonster();
+	deck_monsters = state.getDeck();
+
+	last_move = state.getLastMove();
+
+		if(play == PlayerID.TOP){
+			//deck_monsters = null;
+			bot_hidden = null;
+		}
+		if(play == PlayerID.BOT){
+			//deck_monsters = null;
+			top_hidden = null;
+		}
+		}
+>>>>>>> parent of 59cbcb1 (Deck Generation Works now)
 				
 }
