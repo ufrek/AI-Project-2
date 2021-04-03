@@ -52,8 +52,8 @@ public class MonteCarloTreeSearch
             {
                 nodeToExplore = promisingNode.getRandomChildNode();
             }
-            PlayerID playoutResult = simulateRandomPlayout(nodeToExplore, curPlayer);
-            backPropogation(nodeToExplore, playoutResult);
+            EndOutcome result = simulateRandomPlayout(nodeToExplore, curPlayer);
+            backPropogation(result);                             //this is the issue
         }
 
         Node winnerNode = rootNode.getChildWithMaxScore();
@@ -118,9 +118,10 @@ public class MonteCarloTreeSearch
     }
 
 
-    private void backPropogation(Node nodeToExplore, PlayerID player) 
+    private void backPropogation(EndOutcome result) 
     {
-        Node tempNode = nodeToExplore;
+        Node tempNode = result.getNode();
+        PlayerID player = result.getWinner();
         while (tempNode != null) 
         {
             tempNode.getState().incrementVisit();
@@ -131,30 +132,33 @@ public class MonteCarloTreeSearch
             tempNode = tempNode.getParent();
         }
     }
-    private PlayerID simulateRandomPlayout(Node node, PlayerID curPlayer) 
+    private EndOutcome simulateRandomPlayout(Node node, PlayerID curPlayer) 
     {
         Node tempNode = new Node(node);
         State tempState = tempNode.getState();
        
 
-        PlayerID endGameVictor = tempState.checkStatus(curPlayer);       ///make sure this returns player id
+        PlayerID endGameVictor = tempState.checkStatus(curPlayer);      
         if (endGameVictor == opponent) 
         {
             tempNode.getParent().getState().setWinScore(Integer.MIN_VALUE);
-            return endGameVictor;
+
+            return new EndOutcome(tempNode, endGameVictor);
         }
-        GameState gs = tempState.getGs();                               //could maybe play off of the temp node?
+        GameState gs = tempState.getGs();                              
         List<Monster> newDeck = MontePythonAI.generateDeck(gs);
         gs.setDeck(newDeck);
+        
         while (!isGameOver(gs) && endGameVictor == null)                    
         {
             gs = tempState.randomPlay(gs);
             Move m = gs.getLastMove();//tempState.getMove();
             tempState = new State(m, gs, gs.getCurPlayer());
+            tempNode = new Node(tempState, tempNode, gs.getCurPlayer());       //not sure if this line works
             endGameVictor = tempState.checkStatus(curPlayer);
         }
-        System.out.print(endGameVictor);
-        return endGameVictor;
+        System.out.print("Lookahead Winner" + endGameVictor);
+        return new EndOutcome(tempNode, endGameVictor);
     }
 
     public static PlayerID otherPlayer(PlayerID p)

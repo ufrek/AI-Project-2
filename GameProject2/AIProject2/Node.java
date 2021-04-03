@@ -73,7 +73,7 @@ public class Node
         Node maxChild = null;
         for (Node node : children) 
         {
-            double winScore = node.getState().getWinScore();
+            double winScore = node.getState().getWinScore();            //check this
             if(winScore > maxScore)
             {
                 maxScore = winScore;

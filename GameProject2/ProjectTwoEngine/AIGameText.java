@@ -9,7 +9,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Scanner;
 import AIProject2.*;
-
+//import AliceSquad.AliceTheQuick;
 
 public class AIGameText{
     // Change this file name to change where the moves are written
