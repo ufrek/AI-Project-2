@@ -6,8 +6,8 @@ import java.util.Random;
 public class GreedyPlayer implements Player
 {
     
-    PlayerID playID;
-    PlayerID enemyID;
+    public PlayerID playID;
+    public PlayerID enemyID;
 
     
     GameState currentState;
@@ -36,13 +36,11 @@ public class GreedyPlayer implements Player
         //Are we top or bot?
         if(currentState.getTopName().equals(getPlayName()))
         {
-            playID = PlayerID.TOP;
-            enemyID = PlayerID.BOT;
+            setTeam(PlayerID.TOP);
         }
         else
         {
-            playID = PlayerID.BOT;
-            enemyID = PlayerID.TOP;
+            setTeam(PlayerID.BOT);
         }
     }
     
@@ -180,7 +178,7 @@ public class GreedyPlayer implements Player
             }
         }
         
-        if(currentState.getHidden(playID).equals(cstle))
+        if(currentState.getHidden(playID) != null && currentState.getHidden(playID).equals(cstle))
         {
             score += Monster.DRAGON.value;
             friendDragons++;
@@ -218,11 +216,26 @@ public class GreedyPlayer implements Player
             }
         }
         
-        if(currentState.getHidden(playID).equals(castle))
+        if(currentState.getHidden(playID) != null && currentState.getHidden(playID).equals(castle))
         {
             dragonIndex++;
         }
         
         return dragonIndex < 0;
+    }
+    
+    
+    public void setTeam(PlayerID us)
+    {
+        playID = us;
+        
+        if(playID == PlayerID.TOP)
+        {
+            enemyID = PlayerID.BOT;
+        }
+        else
+        {
+            enemyID = PlayerID.TOP;
+        }
     }
 }

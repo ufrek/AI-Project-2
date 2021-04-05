@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.lang.model.util.ElementScanner14;
 
 public class State
 {
@@ -17,6 +16,8 @@ public class State
     PlayerID curPlayer;
     double winScore;
     Random rand;
+    
+    
 
     public State(Move m, GameState gs, PlayerID curPlayer)   //visitCount
     {
@@ -97,17 +98,30 @@ public class State
     public GameState randomPlay(GameState state)
     {
         Move m = state.getLastMove();
+        
+        
+        GreedyPlayer greedy = new GreedyPlayer();
+        
+        //give the greedy player the current state
+        greedy.begin(state);
+        
+        //tell it what team it's on 
+        greedy.setTeam(curPlayer);
+        
         if(m == null || m instanceof PlaceMonsterMove) //root case: start on the buy phase
         {
-            return RandomBuyMonster(state);
+            //return RandomBuyMonster(state);
+            return GameRules.makeMove(state, greedy.getBuyMonster(state));
         }
         else if(m instanceof BuyMonsterMove)
         {
-            return RandomResponse(state);
+            //return RandomResponse(state);
+            return GameRules.makeMove(state, greedy.getRespond(state, ((BuyMonsterMove) m).getMonster(), ((BuyMonsterMove) m).getPrice()));
         }
         else if (m instanceof RespondMove)
         {
-            return RandomPlaceMonster(state);
+            //return RandomPlaceMonster(state);
+            return GameRules.makeMove(state, greedy.getPlace(state, ((RespondMove)m).getMonster()));
         }
         else
         {
