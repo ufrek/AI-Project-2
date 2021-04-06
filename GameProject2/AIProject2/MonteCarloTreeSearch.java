@@ -2,8 +2,11 @@ package AIProject2;
 
 import java.util.Random;
 
+import javax.lang.model.util.ElementScanner14;
 
 import ProjectTwoEngine.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class MonteCarloTreeSearch 
@@ -13,11 +16,13 @@ public class MonteCarloTreeSearch
     static final int winScore = 10;
     int level;
     PlayerID opponent;
-    int searchDuration = 500;                      //play with values
+    int searchDuration = 5000;                      //play with values
+    
    
 
     public Move findNextMove(GameState state, PlayerID curPlayer)
     {
+        
             //replaces the null deck with a hypotetical deck
         if(state.getDeck() == null)
         {
@@ -52,7 +57,7 @@ public class MonteCarloTreeSearch
                 nodeToExplore = promisingNode.getRandomChildNode();
             }
             EndOutcome result = simulateRandomPlayout(nodeToExplore, curPlayer);
-            backPropogation(result);                             //this is the issue
+            backPropogation(result, curPlayer);                             //this is the issue
         }
 
         Node winnerNode = rootNode.getChildWithMaxScore();
@@ -66,12 +71,15 @@ public class MonteCarloTreeSearch
     private Node selectPromisingNode(Node rootNode) 
     {
         Node node = new Node(rootNode);
+        
     
         while (node.getChildArray().size() != 0) 
         {
             node = UCT.findBestNodeWithUCT(node);
         }
         System.out.println("Node Selected");
+        
+
         return node;
     }
    
@@ -117,14 +125,15 @@ public class MonteCarloTreeSearch
     }
 
 
-    private void backPropogation(EndOutcome result) 
+    private void backPropogation(EndOutcome result, PlayerID curPLayer) 
     {
         Node tempNode = result.getNode();
-        PlayerID player = result.getWinner();
+        if(tempNode.getState().getWinScore() == Integer.MIN_VALUE)
+            return;
         while (tempNode != null) 
         {
             tempNode.getState().incrementVisit();
-            if (tempNode.getState().getCurPlayer() == player)
+            if (tempNode.getState().getCurPlayer() == curPLayer)
              {
                 tempNode.getState().addScore(winScore);           
             }
@@ -155,6 +164,8 @@ public class MonteCarloTreeSearch
             tempState = new State(m, gs, gs.getCurPlayer());
             tempNode = new Node(tempState, tempNode, gs.getCurPlayer());       //not sure if this line works
             endGameVictor = tempState.checkStatus(curPlayer);
+            newDeck = MontePythonAI.generateDeck(gs);
+            gs.setDeck(newDeck);
         }
         System.out.print("Lookahead Winner" + endGameVictor);
         return new EndOutcome(tempNode, endGameVictor);
@@ -183,5 +194,33 @@ public class MonteCarloTreeSearch
             }
             return done;
             }
-    
+            static List<Move> getLegalPlaceMonster(GameState state){
+                System.out.println("Get Legal Place Monster");
+                List<Move> leg_moves = new ArrayList<Move>();
+                RespondMove last_move = (RespondMove) state.getLastMove();
+                Monster monst = last_move.getMonster();
+                PlayerID play = null;
+            
+                
+                if(last_move.isPass()){
+                    play = state.getCurPlayer();
+                }
+                else{
+                    play = otherPlayer( state.getCurPlayer() );
+                }
+            
+            
+                if( state.getCastleWon(CastleID.CastleA) == null){
+                    leg_moves.add( new PlaceMonsterMove(play, CastleID.CastleA, monst) );
+                }
+                if( state.getCastleWon(CastleID.CastleB) == null){
+                    leg_moves.add( new PlaceMonsterMove(play, CastleID.CastleB, monst) );
+                }
+                if( state.getCastleWon(CastleID.CastleC) == null){
+                    leg_moves.add( new PlaceMonsterMove(play, CastleID.CastleC, monst) );
+                }
+            
+                return leg_moves;
+    }
+
 }

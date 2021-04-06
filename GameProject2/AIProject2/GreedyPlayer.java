@@ -2,12 +2,12 @@ package AIProject2;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-
+import ProjectTwoEngine.*;
 public class GreedyPlayer implements Player
 {
     
-    public PlayerID playID;
-    public PlayerID enemyID;
+    PlayerID playID;
+    PlayerID enemyID;
 
     
     GameState currentState;
@@ -36,11 +36,13 @@ public class GreedyPlayer implements Player
         //Are we top or bot?
         if(currentState.getTopName().equals(getPlayName()))
         {
-            setTeam(PlayerID.TOP);
+            playID = PlayerID.TOP;
+            enemyID = PlayerID.BOT;
         }
         else
         {
-            setTeam(PlayerID.BOT);
+            playID = PlayerID.BOT;
+            enemyID = PlayerID.TOP;
         }
     }
     
@@ -112,16 +114,16 @@ public class GreedyPlayer implements Player
         int closestScore = 0;
         
         
-        for(Move m : GameRules.getLegalPlaceMonster(state))
+        for(Move m : MonteCarloTreeSearch.getLegalPlaceMonster(state))
         {
             PlaceMonsterMove m2 = (PlaceMonsterMove)m;
             CastleID castle = m2.getCastle();
             
-            if(bestCastle == null || (closestScore > Math.abs(castleScore(castle)) && (!mon.equals(Monster.DRAGON) || !isDragonTrap(castle))))
+            if(bestCastle == null || (closestScore > Math.abs(castleScore(castle, state)) && (!mon.equals(Monster.DRAGON) || !isDragonTrap(castle))))
             {
                 
                 bestCastle = castle;
-                closestScore = Math.abs(castleScore(castle));
+                closestScore = Math.abs(castleScore(castle, state));
                
             }
         }
@@ -141,7 +143,7 @@ public class GreedyPlayer implements Player
     
     
     
-    private int castleScore(CastleID cstle)
+    private int castleScore(CastleID cstle, GameState state)
     {
         int score = 0;
         
@@ -150,8 +152,9 @@ public class GreedyPlayer implements Player
         
         int friendDragonSlayers = 0;
         int enemyDragonSlayers = 0;
-        
-        for (Monster m : currentState.getMonsters(cstle, playID))
+       if(state.getMonsters(cstle, playID) != null)
+       {
+        for (Monster m : state.getMonsters(cstle, playID))
         {
             score += m.value;
             
@@ -177,8 +180,10 @@ public class GreedyPlayer implements Player
                 enemyDragonSlayers++;
             }
         }
+       } 
+      
         
-        if(currentState.getHidden(playID) != null && currentState.getHidden(playID).equals(cstle))
+        if(state.getHidden(playID) != null && state.getHidden(playID).equals(cstle))
         {
             score += Monster.DRAGON.value;
             friendDragons++;
@@ -216,26 +221,11 @@ public class GreedyPlayer implements Player
             }
         }
         
-        if(currentState.getHidden(playID) != null && currentState.getHidden(playID).equals(castle))
+        if(currentState.getHidden(playID).equals(castle))
         {
             dragonIndex++;
         }
         
         return dragonIndex < 0;
-    }
-    
-    
-    public void setTeam(PlayerID us)
-    {
-        playID = us;
-        
-        if(playID == PlayerID.TOP)
-        {
-            enemyID = PlayerID.BOT;
-        }
-        else
-        {
-            enemyID = PlayerID.TOP;
-        }
     }
 }

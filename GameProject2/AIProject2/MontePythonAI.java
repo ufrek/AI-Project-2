@@ -111,7 +111,7 @@ public class MontePythonAI implements Player
                  outDeck.remove(monster);    
              }      
          }
-         System.out.println("After catle removal: " + outDeck.size());
+         System.out.println("After castle removal: " + outDeck.size());
          Collections.shuffle(outDeck);
          return outDeck;
      }
@@ -189,5 +189,34 @@ public class MontePythonAI implements Player
                  return -1;
          }
      }
+
+        static List<Move> getLegalPlaceMonster(GameState state){
+	System.out.println("Get Legal Place Monster");
+	List<Move> leg_moves = new ArrayList<Move>();
+	RespondMove last_move = (RespondMove) state.getLastMove();
+	Monster monst = last_move.getMonster();
+	PlayerID play = null;
+
+	
+	if(last_move.isPass()){
+	    play = state.getCurPlayer();
+	}
+	else{
+	    play = otherPlayer( state.getCurPlayer() );
+	}
+
+
+	if( state.getCastleWon(CastleID.CastleA) == null){
+	    leg_moves.add( new PlaceMonsterMove(play, CastleID.CastleA, monst) );
+	}
+	if( state.getCastleWon(CastleID.CastleB) == null){
+	    leg_moves.add( new PlaceMonsterMove(play, CastleID.CastleB, monst) );
+	}
+	if( state.getCastleWon(CastleID.CastleC) == null){
+	    leg_moves.add( new PlaceMonsterMove(play, CastleID.CastleC, monst) );
+	}
+
+	return leg_moves;
+    }
     
 }

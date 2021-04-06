@@ -13,9 +13,12 @@ public class Node
     Node parent;
     PlayerID curPlayer;
     List<Node> childArray;
+    static UCT uct;
 
     public Node(State state, Node parent, PlayerID curPlayer)
     {
+        if(uct == null)
+            uct = new UCT();
         this.state = state;
         this.parent = parent;
         this.curPlayer = curPlayer;
@@ -79,6 +82,12 @@ public class Node
                 maxScore = winScore;
                 maxChild = node;
             }
+        }
+        if(maxChild == null)       //to fix bug, if there is no best move, just pick one
+        {
+            Random rand = new Random();
+            int randIndex = rand.nextInt(children.size());
+            maxChild = children.get(randIndex);
         }
         return maxChild;
 
