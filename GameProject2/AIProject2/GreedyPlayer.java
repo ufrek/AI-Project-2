@@ -75,7 +75,7 @@ public class GreedyPlayer implements Player
         //buy for fair value
         if(fairValue.get(choice) <= coins)
         {
-            return new BuyMonsterMove(playID, fairValue.get(choice), choice);
+            return new BuyMonsterMove(playID, Math.min(fairValue.get(choice), state.getCoins(enemyID)), choice);
         }
         
         //if that's not possible, buy with all remaining coins
