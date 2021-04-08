@@ -1,4 +1,5 @@
 package AIProject2;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -13,10 +14,15 @@ public class GreedyPlayer implements Player
     GameState currentState;
     
     HashMap<Monster, Integer> fairValue;
+
+    static List<Float> beliefs;
+    static boolean isDragonAlreadyRevealed = false;
+    static float beliefThreshold = .75f;
     
     
     public GreedyPlayer()
     {
+        beliefs = null;
         fairValue = new HashMap<Monster, Integer>();
         
         fairValue.put(Monster.DRAGON, 6);
@@ -152,6 +158,157 @@ public class GreedyPlayer implements Player
         
         int friendDragonSlayers = 0;
         int enemyDragonSlayers = 0;
+
+          //beliefEvaluation code
+          int dragonScore = 6;
+          BeliefEvaluation b = new BeliefEvaluation();
+          if(beliefs == null)
+          {
+              List<Monster> badMons = new ArrayList<Monster>();
+              for(CastleID cas : CastleID.values())
+              {
+                  List<Monster> temp = state.getMonsters(cas, MonteCarloTreeSearch.otherPlayer(state.getCurPlayer()));
+                  badMons.addAll(temp);
+              }
+             
+              ArrayList<Integer> monValues = new ArrayList<Integer>();
+              for(Monster m : badMons)
+                  monValues.add(m.value);
+              beliefs = b.makeEvaluation(monValues); 
+              switch (cstle) 
+              {
+                  case CastleA:
+                      score -= dragonScore * beliefs.get(0); 
+                      break;
+                  case CastleB:
+                      score -= dragonScore * beliefs.get(1);
+                      break;
+                  case CastleC:
+                      score -= dragonScore * beliefs.get(2);
+                  default:
+                      System.out.println("Belif eval is messed up when initialiizing belliefs");
+                      break;
+              }
+          }
+  
+          else
+          {
+              //if we don't know the location, use beliefevaluation
+              if(state.getHidden(state.getCurPlayer()) == null)   
+                  {
+                     
+                      List<Monster> badMons = new ArrayList<Monster>();
+                      for(CastleID cas : CastleID.values())
+                      {
+                          List<Monster> temp = state.getMonsters(cas, MonteCarloTreeSearch.otherPlayer(state.getCurPlayer()));
+                          badMons.addAll(temp);
+                      }
+                      
+                      ArrayList<Integer> monValues = new ArrayList<Integer>();
+                      for(Monster m : badMons)
+                          monValues.add(m.value);
+                      beliefs = b.ReevaluateBelief(beliefs, state, state.getCurPlayer());
+  
+                      //checks if we have a slayer and place it where we think the hidden dragon is
+                      Move move = state.getLastMove();
+                      RespondMove r = (RespondMove)move;
+                      if(r.getMonster() == Monster.SLAYER)
+                      {
+                          float maxBelief = 0;
+                          int castleIndex = 0;
+                          for(float f : beliefs)
+                          {
+                              if(f > maxBelief)
+                              {
+                                  castleIndex = beliefs.indexOf(f);
+                                  maxBelief = f;
+                              }
+                          }
+                          CastleID maxCas = CastleID.CastleA;
+                          switch (castleIndex)
+                           {
+                              case 0:
+                                  maxCas = CastleID.CastleA;
+                                  break;
+                              case 1:
+                                  maxCas = CastleID.CastleB;
+                                  break;
+                              case 2:
+                                  maxCas = CastleID.CastleC;
+                                  break;
+  
+                              default:
+                                  System.out.println("Didn't find a max Castle Index");
+                                  break;
+                          }
+  
+                          if(cstle == maxCas)
+                              return 0;
+                      }
+                      switch (cstle) 
+                      {
+                          case CastleA:
+                              score -= dragonScore * beliefs.get(0); 
+                              break;
+                          case CastleB:
+                              score -= dragonScore * beliefs.get(1);
+                              break;
+                          case CastleC:
+                              score -= dragonScore * beliefs.get(2);
+                          default:
+                          System.out.println("Belief evaluation is messed up");
+                              break;
+                      }
+                  }
+              //we do know the location
+              else
+              {  
+                  if(!isDragonAlreadyRevealed)
+                  {
+                      beliefs.clear();
+                      CastleID dragLocation = state.getHidden(state.getCurPlayer());
+                      switch (dragLocation) 
+                      {
+                          case CastleA:
+                          beliefs.add(0, 1f);
+                          beliefs.add(1, 0f);
+                          beliefs.add(2,0f);
+                          break;
+                      case CastleB:
+                          beliefs.add(0, 0f);
+                          beliefs.add(1, 1f);
+                          beliefs.add(2,0f);
+                          break;
+                      case CastleC:
+                          beliefs.add(0, 0f);
+                          beliefs.add(1, 0f);
+                          beliefs.add(2,1f);
+                      default:
+                          break;
+                      }
+  
+                      isDragonAlreadyRevealed = true;
+                  }
+  
+                  switch (cstle) 
+                  {
+                      case CastleA:
+                          score -= dragonScore * beliefs.get(0); 
+                          break;
+                      case CastleB:
+                          score -= dragonScore * beliefs.get(1);
+                          break;
+                      case CastleC:
+                          score -= dragonScore * beliefs.get(2);
+                      default:
+                      System.out.println("Belief evaluation is messed up");
+                          break;
+                  }
+                
+              }
+          }
+
+        //back to greedy logic
        if(state.getMonsters(cstle, playID) != null)
        {
         for (Monster m : state.getMonsters(cstle, playID))
@@ -221,7 +378,7 @@ public class GreedyPlayer implements Player
             }
         }
         
-        if(currentState.getHidden(playID).equals(castle))
+        if(currentState.getHidden(playID) != null && currentState.getHidden(playID).equals(castle))
         {
             dragonIndex++;
         }

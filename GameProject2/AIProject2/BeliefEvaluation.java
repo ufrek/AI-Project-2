@@ -57,11 +57,12 @@ public List<Float> makeEvaluation(ArrayList<Integer> Forces)
     NewBeliefs.add(.33f);
     if(AllForcesSummed == 0)
         AllForcesSummed = 1;
-    if(Forces.size() > 0)
+    if(Forces.size() > 2)
     {
         for(int i = 0; i<3; i++)
         {
             NewBeliefs.set(i, (float) Forces.get(i)/AllForcesSummed);
+            NewBeliefs.set(i,1 - NewBeliefs.get(i));
     
         }
     }

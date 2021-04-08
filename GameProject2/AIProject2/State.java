@@ -129,38 +129,38 @@ public class State
 
     public GameState  RandomBuyMonster(GameState state)
     {
-        System.out.println(state.getPublicMonsters().size());
+        /*System.out.println(state.getPublicMonsters().size());
         List<Move> leg_moves = GameRules.getLegalMoves(state);
       
         int i = rand.nextInt(leg_moves.size());
-         return GameRules.makeMove(state, (BuyMonsterMove) leg_moves.get(i));
+         return GameRules.makeMove(state, (BuyMonsterMove) leg_moves.get(i));*/
         
      
-         //return GameRules.makeMove(state, greedPlayer.getBuyMonster(state));
+         return GameRules.makeMove(state, greedPlayer.getBuyMonster(state));
     }
     
     public GameState  RandomResponse(GameState state)
     {
-       List<Move> leg_moves = GameRules.getLegalMoves(state);
+       /*List<Move> leg_moves = GameRules.getLegalMoves(state);
         
         int i = rand.nextInt(leg_moves.size());
-         return GameRules.makeMove(state, (RespondMove) leg_moves.get(i));
-        //BuyMonsterMove m = (BuyMonsterMove)state.getLastMove();
-        //Monster mon = m.getMonster();
-        //int price = m.getPrice();
-         //return GameRules.makeMove(state, greedPlayer.getRespond(state, mon, price));
+         return GameRules.makeMove(state, (RespondMove) leg_moves.get(i));*/
+        BuyMonsterMove m = (BuyMonsterMove)state.getLastMove();
+        Monster mon = m.getMonster();
+        int price = m.getPrice();
+        return GameRules.makeMove(state, greedPlayer.getRespond(state, mon, price));
     }
 
     public GameState  RandomPlaceMonster(GameState state)
     {
-        List<Move> leg_moves = GameRules.getLegalMoves(state);
+        /*List<Move> leg_moves = GameRules.getLegalMoves(state);
         
         int i = rand.nextInt(leg_moves.size());
-         return GameRules.makeMove(state, (PlaceMonsterMove) leg_moves.get(i));
+         return GameRules.makeMove(state, (PlaceMonsterMove) leg_moves.get(i));*/
 
-        // RespondMove m = (RespondMove)state.getLastMove();
-         //Monster mon = m.getMonster();
-         //return GameRules.makeMove(state, greedPlayer.getPlace(state, mon));
+         RespondMove m = (RespondMove)state.getLastMove();
+         Monster mon = m.getMonster();
+        return GameRules.makeMove(state, greedPlayer.getPlace(state, mon));
     }
 
     public Move getMove() 

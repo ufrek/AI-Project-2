@@ -2,8 +2,6 @@ package AIProject2;
 
 import java.util.Random;
 
-import javax.lang.model.util.ElementScanner14;
-
 import ProjectTwoEngine.*;
 
 import java.util.ArrayList;
@@ -19,6 +17,7 @@ public class UCT
     static HashMap<Monster, Integer> fairValue;
     static List<Float> beliefs;
     static boolean isDragonAlreadyRevealed = false;
+    static float beliefThreshold = .75f;
     public UCT()
     {
         beliefs = null;
@@ -75,6 +74,7 @@ public class UCT
 
     static List<Node> SortBuyMove(Node node)   //sorted greedily
     {
+       
         List<Node> goodMoves = new ArrayList<Node>();
         List<Node> badMoves = new ArrayList<Node>();
         GameState state = node.getState().getGs();
@@ -98,7 +98,26 @@ public class UCT
                 choice = m;
             }
         }
-        if(choice.value == 6) //only prioritize if first choice is either dragon or gryphon, otherwise power priority is random
+
+        //if we strongly believe a dragon is at a ceretain spot, prioritize buying a slayer
+        if(state.getHidden(state.getCurPlayer()) == null && beliefs  != null)
+        {
+            for(Float f : beliefs)
+            {
+                if(f > beliefThreshold && available.contains(Monster.SLAYER)) 
+                {
+                    if(fairValue.get(Monster.SLAYER) <= coins)
+                    {
+                        second = choice;
+                        choice = Monster.SLAYER;
+                        
+                    }
+                   
+                }
+            }
+        }
+        //if we think a monster
+        if(choice.value == 6 || choice.value == 1) //only prioritize if first choice is either dragon or gryphon, otherwise power priority is random
         {
             second = Monster.GRYPHON;
             third = Monster.GIANT;
@@ -156,10 +175,28 @@ public class UCT
         
         boolean willPass = true;
         //steal if opponent is buying for 70& of fair value or less
-        if(price <= 0.6 * fairValue.get(mon) && coins >= price)
+        if(price <= 0.65 * fairValue.get(mon) && coins >= price)
         {
 
            willPass = false;
+        }
+
+        //if beliefs of Dragon location are strong enough, steal a slayer
+        if(state.getHidden(state.getCurPlayer()) == null &&  m.getMonster() == Monster.SLAYER && beliefs != null)
+        {
+            for(Float f : beliefs)
+            {
+                if(f > beliefThreshold) 
+                {
+                    if(price <= 2 * fairValue.get(mon) && coins >= price)
+                    {
+
+                         willPass = false;
+                    }
+                    
+                }
+            }
+            
         }
         for(Node n : node.getChildArray())
         {
@@ -224,12 +261,20 @@ public class UCT
         int friendDragonSlayers = 0;
         int enemyDragonSlayers = 0;
         
+       
+
         //beliefEvaluation code
         int dragonScore = 6;
         BeliefEvaluation b = new BeliefEvaluation();
         if(beliefs == null)
         {
-            List<Monster> badMons = state.getMonsters(cstle, MonteCarloTreeSearch.otherPlayer(state.getCurPlayer()));
+            List<Monster> badMons = new ArrayList<Monster>();
+            for(CastleID cas : CastleID.values())
+            {
+                List<Monster> temp = state.getMonsters(cas, MonteCarloTreeSearch.otherPlayer(state.getCurPlayer()));
+                badMons.addAll(temp);
+            }
+           
             ArrayList<Integer> monValues = new ArrayList<Integer>();
             for(Monster m : badMons)
                 monValues.add(m.value);
@@ -255,11 +300,55 @@ public class UCT
             //if we don't know the location, use beliefevaluation
             if(state.getHidden(state.getCurPlayer()) == null)   
                 {
-                    List<Monster> badMons = state.getMonsters(cstle, MonteCarloTreeSearch.otherPlayer(state.getCurPlayer()));
+                   
+                    List<Monster> badMons = new ArrayList<Monster>();
+                    for(CastleID cas : CastleID.values())
+                    {
+                        List<Monster> temp = state.getMonsters(cas, MonteCarloTreeSearch.otherPlayer(state.getCurPlayer()));
+                        badMons.addAll(temp);
+                    }
+                    
                     ArrayList<Integer> monValues = new ArrayList<Integer>();
                     for(Monster m : badMons)
                         monValues.add(m.value);
                     beliefs = b.ReevaluateBelief(beliefs, state, state.getCurPlayer());
+
+                    //checks if we have a slayer and place it where we think the hidden dragon is
+                    Move move = state.getLastMove();
+                    RespondMove r = (RespondMove)move;
+                    if(r.getMonster() == Monster.SLAYER)
+                    {
+                        float maxBelief = 0;
+                        int castleIndex = 0;
+                        for(float f : beliefs)
+                        {
+                            if(f > maxBelief)
+                            {
+                                castleIndex = beliefs.indexOf(f);
+                                maxBelief = f;
+                            }
+                        }
+                        CastleID maxCas = CastleID.CastleA;
+                        switch (castleIndex)
+                         {
+                            case 0:
+                                maxCas = CastleID.CastleA;
+                                break;
+                            case 1:
+                                maxCas = CastleID.CastleB;
+                                break;
+                            case 2:
+                                maxCas = CastleID.CastleC;
+                                break;
+
+                            default:
+                                System.out.println("Didn't find a max Castle Index");
+                                break;
+                        }
+
+                        if(cstle == maxCas)
+                            return 0;
+                    }
                     switch (cstle) 
                     {
                         case CastleA:
