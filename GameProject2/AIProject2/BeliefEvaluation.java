@@ -37,7 +37,7 @@ List<Float> Beliefs = new List<Float>(3);
 
     }
     }
-    else(){
+    else{
         for(int i = 0; i < 3; i++){
             List Evilmonsters = gs.getMonsters(i, PlayerID.Top);
             int EvilProwess = 0;
