@@ -2,8 +2,6 @@ package AIProject2;
 
 import java.util.Random;
 
-import javax.lang.model.util.ElementScanner14;
-
 import ProjectTwoEngine.*;
 
 import java.util.ArrayList;

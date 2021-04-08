@@ -202,7 +202,7 @@ public class MontePythonAI implements Player
 	    play = state.getCurPlayer();
 	}
 	else{
-	    play = otherPlayer( state.getCurPlayer() );
+	    play = MonteCarloTreeSearch.otherPlayer( state.getCurPlayer() );
 	}
 
 
