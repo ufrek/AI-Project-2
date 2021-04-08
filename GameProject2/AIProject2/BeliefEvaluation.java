@@ -4,7 +4,7 @@ import java.util.List;
 
 import ProjectTwoEngine.*;
 public class BeliefEvaluation{
-public List<Float> ReevaluateBelief(ArrayList<Float> beliefs, GameState gs, PlayerID player){
+public List<Float> ReevaluateBelief(List<Float> beliefs, GameState gs, PlayerID player){
 GameState gamestate = gs;
 CastleID castle = CastleID.CastleA;
 List<Float> Beliefs = beliefs;
@@ -44,15 +44,23 @@ ArrayList OpponentForces = new ArrayList<Integer>();
 Beliefs = makeEvaluation(OpponentForces);
 return Beliefs;
 }
-public List<Float> makeEvaluation(ArrayList<Integer> Forces){
+public List<Float> makeEvaluation(ArrayList<Integer> Forces)
+{
     int AllForcesSummed = 0;
-    for(int force: Forces){
+    for(int force: Forces)
+    {
         AllForcesSummed+=force;
     }
     List<Float> NewBeliefs = new ArrayList<Float>();
-    for(int i = 0; i<3; i++){
-        NewBeliefs.set(i, (float) NewBeliefs.get(i)/AllForcesSummed);
-        NewBeliefs.set(i, 1-NewBeliefs.get(i));
+    NewBeliefs.add(.33f);
+    NewBeliefs.add(.33f);
+    NewBeliefs.add(.33f);
+    if(AllForcesSummed == 0)
+        AllForcesSummed = 1;
+    for(int i = 0; i<3; i++)
+    {
+        NewBeliefs.set(i, (float) Forces.get(i)/AllForcesSummed);
+
     }
     return NewBeliefs;
 }
