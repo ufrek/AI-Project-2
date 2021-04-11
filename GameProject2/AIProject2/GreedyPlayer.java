@@ -75,7 +75,7 @@ public class GreedyPlayer implements Player
         //buy for fair value
         if(fairValue.get(choice) <= coins)
         {
-            return new BuyMonsterMove(playID, Math.min(fairValue.get(choice), state.getCoins(enemyID)), choice);
+            return new BuyMonsterMove(playID, fairValue.get(choice), choice);
         }
         
         //if that's not possible, buy with all remaining coins
@@ -175,20 +175,17 @@ public class GreedyPlayer implements Player
               for(Monster m : badMons)
                   monValues.add(m.value);
               beliefs = b.makeEvaluation(monValues); 
-              switch (cstle) 
-              {
-                  case CastleA:
+              int curCas = cstle.ordinal();
+              if(curCas == 0)
                       score -= dragonScore * beliefs.get(0); 
-                      break;
-                  case CastleB:
+              else if(curCas == 1)
                       score -= dragonScore * beliefs.get(1);
-                      break;
-                  case CastleC:
+              else if(curCas == 2)
                       score -= dragonScore * beliefs.get(2);
-                  default:
+              else
                       System.out.println("Belif eval is messed up when initialiizing belliefs");
-                      break;
-              }
+              
+              
           }
   
           else
@@ -224,6 +221,7 @@ public class GreedyPlayer implements Player
                                   maxBelief = f;
                               }
                           }
+  
                           CastleID maxCas = CastleID.CastleA;
                           switch (castleIndex)
                            {
@@ -245,20 +243,19 @@ public class GreedyPlayer implements Player
                           if(cstle == maxCas)
                               return 0;
                       }
-                      switch (cstle) 
-                      {
-                          case CastleA:
+                      
+                      int curCastle = cstle.ordinal();
+                     if(curCastle == 0)
                               score -= dragonScore * beliefs.get(0); 
-                              break;
-                          case CastleB:
+                      else if(curCastle == 1)
                               score -= dragonScore * beliefs.get(1);
-                              break;
-                          case CastleC:
+                              
+                      else if(curCastle == 2)
                               score -= dragonScore * beliefs.get(2);
-                          default:
-                          System.out.println("Belief evaluation is messed up");
-                              break;
-                      }
+                      else
+                              System.out.println("Belief evaluation is messed up. Line 402");
+                             
+                      
                   }
               //we do know the location
               else
@@ -267,46 +264,44 @@ public class GreedyPlayer implements Player
                   {
                       beliefs.clear();
                       CastleID dragLocation = state.getHidden(state.getCurPlayer());
-                      switch (dragLocation) 
+                      int dragLoc = dragLocation.ordinal();
+                      if(dragLoc == 0)
                       {
-                          case CastleA:
                           beliefs.add(0, 1f);
                           beliefs.add(1, 0f);
                           beliefs.add(2,0f);
-                          break;
-                      case CastleB:
-                          beliefs.add(0, 0f);
-                          beliefs.add(1, 1f);
-                          beliefs.add(2,0f);
-                          break;
-                      case CastleC:
+                      }
+                     else if(dragLoc == 1)
+                     {
+                      beliefs.add(0, 0f);
+                      beliefs.add(1, 1f);
+                      beliefs.add(2,0f);
+                     }
+                      else if (dragLoc == 2)   
+                       {
                           beliefs.add(0, 0f);
                           beliefs.add(1, 0f);
                           beliefs.add(2,1f);
-                      default:
-                          break;
-                      }
+                       }
+                      else
+                          System.out.println("dragon Location broken");
   
                       isDragonAlreadyRevealed = true;
                   }
-  
-                  switch (cstle) 
-                  {
-                      case CastleA:
+                  int curCastle = cstle.ordinal();
+                  System.out.println(curCastle);
+                 if(curCastle == 0)
                           score -= dragonScore * beliefs.get(0); 
-                          break;
-                      case CastleB:
+                else if(curCastle == 1)
                           score -= dragonScore * beliefs.get(1);
-                          break;
-                      case CastleC:
+                  else if(curCastle == 2)
                           score -= dragonScore * beliefs.get(2);
-                      default:
-                      System.out.println("Belief evaluation is messed up");
-                          break;
-                  }
+                  else
+                      System.out.println("Belief evaluation is messed up Line 446");
                 
               }
           }
+  
 
         //back to greedy logic
        if(state.getMonsters(cstle, playID) != null)
@@ -362,26 +357,28 @@ public class GreedyPlayer implements Player
     private boolean isDragonTrap(CastleID castle)
     {
         int dragonIndex = 0;
-        
-        if(currentState.getMonsters(castle, playID) == null)
+        if( currentState.getMonsters(castle, playID) != null)
         {
-            return false;       //null check
-        }
-        
-        for (Monster m : currentState.getMonsters(castle, playID))
-        {
-            if(m.equals(Monster.DRAGON))
+            for (Monster m : currentState.getMonsters(castle, playID))
             {
-                dragonIndex++;
+                if(m.equals(Monster.DRAGON))
+                {
+                    dragonIndex++;
+                }
             }
         }
-        for (Monster m : currentState.getMonsters(castle, enemyID))
+        if(currentState.getMonsters(castle, enemyID) != null)
         {
-            if(m.equals(Monster.SLAYER))
+            for (Monster m : currentState.getMonsters(castle, enemyID))
             {
-                dragonIndex--;
+                if(m.equals(Monster.SLAYER))
+                {
+                    dragonIndex--;
+                }
             }
         }
+
+      
         
         if(currentState.getHidden(playID) != null && currentState.getHidden(playID).equals(castle))
         {

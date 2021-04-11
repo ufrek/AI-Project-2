@@ -27,7 +27,7 @@ public class MontePythonAI implements Player
     //This function is called when the game starts
    public void begin(GameState init_state)
     {                                            //implement initialize Hidden Beliefs
-        rand = new Random();                    //probably no longer needed
+	    rand = new Random();                    //probably no longer needed
         gameDeck = DeckFactory.createDeck();     // 5 giant, 5 warlion, 4 wolf, 4 gryphon, 2 dragon, 2 slayer
 
 
@@ -37,22 +37,8 @@ public class MontePythonAI implements Player
     //This function is called when the player must select a monster to buy
     public BuyMonsterMove getBuyMonster(GameState state)
     {
-        //Are we top or bot?
-        PlayerID enemyID;
-        if(state.getTopName().equals(getPlayName()))
-        {
-            enemyID = PlayerID.BOT;
-        }
-        else
-        {
-            enemyID = PlayerID.TOP;
-        }
-        
-        //Get the move, and stop us from paying too many coins
-        BuyMonsterMove bm = (BuyMonsterMove) montey.findNextMove(new GameState(state), state.getCurPlayer());
-        bm.price = Math.min(bm.price, state.getCoins(enemyID));
-       
-        return bm;
+
+	   return (BuyMonsterMove) montey.findNextMove(new GameState(state), state.getCurPlayer());
     }
 
     //This function is called at the start of your opponent's turn
@@ -82,7 +68,7 @@ public class MontePythonAI implements Player
 
     public String getPlayName()
     {
-        return "MontePython Searcher";
+	    return "MontePython Searcher";
     }
 
      
@@ -205,32 +191,32 @@ public class MontePythonAI implements Player
      }
 
         static List<Move> getLegalPlaceMonster(GameState state){
-    System.out.println("Get Legal Place Monster");
-    List<Move> leg_moves = new ArrayList<Move>();
-    RespondMove last_move = (RespondMove) state.getLastMove();
-    Monster monst = last_move.getMonster();
-    PlayerID play = null;
+	System.out.println("Get Legal Place Monster");
+	List<Move> leg_moves = new ArrayList<Move>();
+	RespondMove last_move = (RespondMove) state.getLastMove();
+	Monster monst = last_move.getMonster();
+	PlayerID play = null;
 
-    
-    if(last_move.isPass()){
-        play = state.getCurPlayer();
-    }
-    else{
-        play = MonteCarloTreeSearch.otherPlayer( state.getCurPlayer() );
-    }
+	
+	if(last_move.isPass()){
+	    play = state.getCurPlayer();
+	}
+	else{
+	    play = MonteCarloTreeSearch.otherPlayer( state.getCurPlayer() );
+	}
 
 
-    if( state.getCastleWon(CastleID.CastleA) == null){
-        leg_moves.add( new PlaceMonsterMove(play, CastleID.CastleA, monst) );
-    }
-    if( state.getCastleWon(CastleID.CastleB) == null){
-        leg_moves.add( new PlaceMonsterMove(play, CastleID.CastleB, monst) );
-    }
-    if( state.getCastleWon(CastleID.CastleC) == null){
-        leg_moves.add( new PlaceMonsterMove(play, CastleID.CastleC, monst) );
-    }
+	if( state.getCastleWon(CastleID.CastleA) == null){
+	    leg_moves.add( new PlaceMonsterMove(play, CastleID.CastleA, monst) );
+	}
+	if( state.getCastleWon(CastleID.CastleB) == null){
+	    leg_moves.add( new PlaceMonsterMove(play, CastleID.CastleB, monst) );
+	}
+	if( state.getCastleWon(CastleID.CastleC) == null){
+	    leg_moves.add( new PlaceMonsterMove(play, CastleID.CastleC, monst) );
+	}
 
-    return leg_moves;
+	return leg_moves;
     }
     
 }

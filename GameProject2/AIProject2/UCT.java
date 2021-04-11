@@ -2,6 +2,8 @@ package AIProject2;
 
 import java.util.Random;
 
+import javax.lang.model.util.ElementScanner14;
+
 import ProjectTwoEngine.*;
 
 import java.util.ArrayList;
@@ -80,6 +82,7 @@ public class UCT
         GameState state = node.getState().getGs();
         
         int coins = state.getCoins(state.getCurPlayer());
+        int oppCoins = state.getCoins(MonteCarloTreeSearch.otherPlayer(state.getCurPlayer()));
         List<Monster> available = state.getPublicMonsters();
         Random rand = new Random();
        
@@ -117,19 +120,30 @@ public class UCT
             }
         }
         //if we think a monster
-        if(choice.value == 6 || choice.value == 1) //only prioritize if first choice is either dragon or gryphon, otherwise power priority is random
+        if(choice.value == 6) //only prioritize if first choice is either dragon or gryphon, otherwise power priority is random
         {
             second = Monster.GRYPHON;
             third = Monster.GIANT;
       
         }
-        for(Node n : node.getChildArray())
+        boolean hasBestMove = false;
+        for(Node n : node.getChildArray())   //could add more logic to check castles out. The mind is willing but clock is not.
         {
             Move m = n.getState().getMove();
             BuyMonsterMove b = (BuyMonsterMove)m;
             if(b.getMonster().equals(choice))
             {
-                if(fairValue.get(choice) <= coins)
+                if(!hasBestMove && oppCoins == 0 && b.getPrice() == 1) //buys for when when opponent can't steal
+                {
+                    goodMoves.add(0,n);
+                    hasBestMove = true;
+                }
+                else if(!hasBestMove && coins > oppCoins && choice.value >= 3 && b.getPrice() == oppCoins + 1 )   //if have more coins, prioritize outbidding
+                {
+                    goodMoves.add(0,n);
+                    hasBestMove = true;
+                }
+                else if(fairValue.get(choice) <= coins)
                 {
                     goodMoves.add(n);             //add more expensive moves to end
                 }
@@ -137,14 +151,36 @@ public class UCT
             }
             else if(b.getMonster().equals(second))
             {
-                if(fairValue.get(second) <= coins)
+                if(!hasBestMove && oppCoins == 0 && b.getPrice() == 1) //buys for 1 when when opponent can't steal
+                {
+                    goodMoves.add(0,n);
+                    hasBestMove = true;
+                }
+                 //if have more coins, prioritize outbidding giants and up
+                else if(!hasBestMove && coins > oppCoins && second.value >= 3 && b.getPrice() == oppCoins + 1 )  
+                {
+                    goodMoves.add(0,n);
+                    hasBestMove = true;
+                }
+                else if(fairValue.get(second) <= coins)
                 {
                     goodMoves.add(n);             //add more expensive moves to end
                 }
             }
             else if(b.getMonster().equals(third))
             {
-                if(fairValue.get(third) <= coins)
+                if(!hasBestMove && oppCoins == 0 && b.getPrice() == 1) //buys for 1 when when opponent can't steal
+                {
+                    goodMoves.add(0,n);
+                    hasBestMove = true;
+                }
+                 //if have more coins, prioritize outbidding giants and up
+                else if(!hasBestMove && coins > oppCoins && third.value >= 3 && b.getPrice() == oppCoins + 1 )  
+                {
+                    goodMoves.add(0,n);
+                    hasBestMove = true;
+                }
+                else if(fairValue.get(third) <= coins)
                 {
                     goodMoves.add(n);             //add more expensive moves to end
                 }
@@ -152,20 +188,21 @@ public class UCT
             else
                 badMoves.add(n);
         }
-        Collections.shuffle(goodMoves);
+        //Collections.shuffle(goodMoves);
         Collections.shuffle(badMoves);  //shuffles up the bad moves as last priority move checks
         goodMoves.addAll(badMoves);
         
-        //if that's not possible, buy with all remaining coins
+        
         return goodMoves;
 
     }
 
-    static List<Node> sortRespondMove(Node node)
+    static List<Node> sortRespondMove(Node node)    //could implement a closeness metric for castles to see if it's worth stealing...TIME....
     {
         GameState state = node.getState().getGs();
         
         int coins = state.getCoins(state.getCurPlayer()); 
+        int oppCoins = state.getCoins(MonteCarloTreeSearch.otherPlayer(state.getCurPlayer()));
         BuyMonsterMove m = (BuyMonsterMove)state.getLastMove();
         int price = m.getPrice();
         Monster mon = m.getMonster();
@@ -179,6 +216,18 @@ public class UCT
         {
 
            willPass = false;
+        }
+     
+        //prioritizes stealing potentially troublesome monsters, makes sure you still have some coins left over
+        // and don't give too many to the opponent
+        if((mon.value >= 3) && coins >= price + 2 && oppCoins + price < 10)
+        {
+            willPass = false;
+        }
+
+        if(price < coins * .7 && mon.value >= 3)    
+        {
+            willPass = false;
         }
 
         //if beliefs of Dragon location are strong enough, steal a slayer
@@ -279,20 +328,17 @@ public class UCT
             for(Monster m : badMons)
                 monValues.add(m.value);
             beliefs = b.makeEvaluation(monValues); 
-            switch (cstle) 
-            {
-                case CastleA:
+            int curCas = cstle.ordinal();
+            if(curCas == 0)
                     score -= dragonScore * beliefs.get(0); 
-                    break;
-                case CastleB:
+            else if(curCas == 1)
                     score -= dragonScore * beliefs.get(1);
-                    break;
-                case CastleC:
+            else if(curCas == 2)
                     score -= dragonScore * beliefs.get(2);
-                default:
-                    System.out.println("Belief eval is messed up when initialiizing beliefs");
-                    break;
-            }
+            else
+                    System.out.println("Belif eval is messed up when initialiizing belliefs");
+            
+            
         }
 
         else
@@ -328,6 +374,7 @@ public class UCT
                                 maxBelief = f;
                             }
                         }
+
                         CastleID maxCas = CastleID.CastleA;
                         switch (castleIndex)
                          {
@@ -349,20 +396,19 @@ public class UCT
                         if(cstle == maxCas)
                             return 0;
                     }
-                    switch (cstle) 
-                    {
-                        case CastleA:
+                    
+                    int curCastle = cstle.ordinal();
+                   if(curCastle == 0)
                             score -= dragonScore * beliefs.get(0); 
-                            break;
-                        case CastleB:
+                    else if(curCastle == 1)
                             score -= dragonScore * beliefs.get(1);
-                            break;
-                        case CastleC:
+                            
+                    else if(curCastle == 2)
                             score -= dragonScore * beliefs.get(2);
-                        default:
-                        System.out.println("Belief evaluation is messed up");
-                            break;
-                    }
+                    else
+                            System.out.println("Belief evaluation is messed up. Line 402");
+                           
+                    
                 }
             //we do know the location
             else
@@ -371,43 +417,40 @@ public class UCT
                 {
                     beliefs.clear();
                     CastleID dragLocation = state.getHidden(state.getCurPlayer());
-                    switch (dragLocation) 
+                    int dragLoc = dragLocation.ordinal();
+                    if(dragLoc == 0)
                     {
-                        case CastleA:
                         beliefs.add(0, 1f);
                         beliefs.add(1, 0f);
                         beliefs.add(2,0f);
-                        break;
-                    case CastleB:
-                        beliefs.add(0, 0f);
-                        beliefs.add(1, 1f);
-                        beliefs.add(2,0f);
-                        break;
-                    case CastleC:
+                    }
+                   else if(dragLoc == 1)
+                   {
+                    beliefs.add(0, 0f);
+                    beliefs.add(1, 1f);
+                    beliefs.add(2,0f);
+                   }
+                    else if (dragLoc == 2)   
+                     {
                         beliefs.add(0, 0f);
                         beliefs.add(1, 0f);
                         beliefs.add(2,1f);
-                    default:
-                        break;
-                    }
+                     }
+                    else
+                        System.out.println("dragon Location broken");
 
                     isDragonAlreadyRevealed = true;
                 }
-
-                switch (cstle) 
-                {
-                    case CastleA:
+                int curCastle = cstle.ordinal();
+                System.out.println(curCastle);
+               if(curCastle == 0)
                         score -= dragonScore * beliefs.get(0); 
-                        break;
-                    case CastleB:
+              else if(curCastle == 1)
                         score -= dragonScore * beliefs.get(1);
-                        break;
-                    case CastleC:
+                else if(curCastle == 2)
                         score -= dragonScore * beliefs.get(2);
-                    default:
-                    System.out.println("Belief evaluation is messed up");
-                        break;
-                }
+                else
+                    System.out.println("Belief evaluation is messed up Line 446");
               
             }
         }
