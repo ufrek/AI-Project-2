@@ -290,7 +290,7 @@ public class UCT
                 case CastleC:
                     score -= dragonScore * beliefs.get(2);
                 default:
-                    System.out.println("Belif eval is messed up when initialiizing belliefs");
+                    System.out.println("Belief eval is messed up when initialiizing beliefs");
                     break;
             }
         }

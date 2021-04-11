@@ -363,6 +363,11 @@ public class GreedyPlayer implements Player
     {
         int dragonIndex = 0;
         
+        if(currentState.getMonsters(castle, playID) == null)
+        {
+            return false;       //null check
+        }
+        
         for (Monster m : currentState.getMonsters(castle, playID))
         {
             if(m.equals(Monster.DRAGON))
