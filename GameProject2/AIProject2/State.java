@@ -104,20 +104,20 @@ public class State
     }
     
 //----------------Random Play Functions----------------------------------------
-    public GameState randomPlay(GameState state)
+    public GameState randomPlay(GameState state, boolean randumb)
     {
         Move m = state.getLastMove();
         if(m == null || m instanceof PlaceMonsterMove) //root case: start on the buy phase
         {
-            return RandomBuyMonster(state);
+            return RandomBuyMonster(state, randumb);
         }
         else if(m instanceof BuyMonsterMove)
         {
-            return RandomResponse(state);
+            return RandomResponse(state, randumb);
         }
         else if (m instanceof RespondMove)
         {
-            return RandomPlaceMonster(state);
+            return RandomPlaceMonster(state, randumb);
         }
         else
         {
@@ -127,40 +127,58 @@ public class State
            
     }
 
-    public GameState  RandomBuyMonster(GameState state)
+    public GameState  RandomBuyMonster(GameState state, boolean randumb)
     {
-        /*System.out.println(state.getPublicMonsters().size());
-        List<Move> leg_moves = GameRules.getLegalMoves(state);
-      
-        int i = rand.nextInt(leg_moves.size());
-         return GameRules.makeMove(state, (BuyMonsterMove) leg_moves.get(i));*/
+        if(randumb)
+        {
+                System.out.println(state.getPublicMonsters().size());
+            List<Move> leg_moves = GameRules.getLegalMoves(state);
+        
+            int i = rand.nextInt(leg_moves.size());
+            return GameRules.makeMove(state, (BuyMonsterMove) leg_moves.get(i));
+        }
+      else
         
      
          return GameRules.makeMove(state, greedPlayer.getBuyMonster(state));
     }
     
-    public GameState  RandomResponse(GameState state)
+    public GameState  RandomResponse(GameState state, boolean randumb)
     {
-       /*List<Move> leg_moves = GameRules.getLegalMoves(state);
+        if(randumb)
+        {
+              List<Move> leg_moves = GameRules.getLegalMoves(state);
         
         int i = rand.nextInt(leg_moves.size());
-         return GameRules.makeMove(state, (RespondMove) leg_moves.get(i));*/
-        BuyMonsterMove m = (BuyMonsterMove)state.getLastMove();
-        Monster mon = m.getMonster();
-        int price = m.getPrice();
-        return GameRules.makeMove(state, greedPlayer.getRespond(state, mon, price));
+         return GameRules.makeMove(state, (RespondMove) leg_moves.get(i));
+        }
+        else
+        {
+            BuyMonsterMove m = (BuyMonsterMove)state.getLastMove();
+            Monster mon = m.getMonster();
+            int price = m.getPrice();
+            return GameRules.makeMove(state, greedPlayer.getRespond(state, mon, price));
+        }
+      
     }
 
-    public GameState  RandomPlaceMonster(GameState state)
+    public GameState  RandomPlaceMonster(GameState state, boolean randumb)
     {
-        /*List<Move> leg_moves = GameRules.getLegalMoves(state);
+        if(randumb)
+        {
+              List<Move> leg_moves = GameRules.getLegalMoves(state);
         
         int i = rand.nextInt(leg_moves.size());
-         return GameRules.makeMove(state, (PlaceMonsterMove) leg_moves.get(i));*/
+         return GameRules.makeMove(state, (PlaceMonsterMove) leg_moves.get(i));
+        }
+        else
+        {
+            RespondMove m = (RespondMove)state.getLastMove();
+            Monster mon = m.getMonster();
+           return GameRules.makeMove(state, greedPlayer.getPlace(state, mon));
+        }
 
-         RespondMove m = (RespondMove)state.getLastMove();
-         Monster mon = m.getMonster();
-        return GameRules.makeMove(state, greedPlayer.getPlace(state, mon));
+        
     }
 
     public Move getMove() 

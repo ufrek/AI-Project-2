@@ -12,7 +12,7 @@ import ProjectTwoEngine.*;
 import java.util.List;
 
 
-public class DumbMonteAI implements Player 
+public class RanDumMonteAI implements Player 
 {
     List<Monster> gameDeck;
     int[] monsterCounts;        //in order, this counts how many monsters are still in deck i
@@ -20,9 +20,9 @@ public class DumbMonteAI implements Player
 
 
     Random rand;
-    DumbSearch montey = new DumbSearch();
+    RanDumSearch montey = new RanDumSearch();
 
-    public DumbMonteAI(){}
+    public RanDumMonteAI(){}
 
     //This function is called when the game starts
    public void begin(GameState init_state)

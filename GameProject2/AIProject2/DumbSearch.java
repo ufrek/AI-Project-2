@@ -157,7 +157,7 @@ public class DumbSearch
         
         while (!isGameOver(gs) && endGameVictor == null)                    
         {
-            gs = tempState.randomPlay(gs);
+            gs = tempState.randomPlay(gs, false);
             Move m = gs.getLastMove();//tempState.getMove();
             tempState = new State(m, gs, gs.getCurPlayer());
             tempNode = new Node(tempState, tempNode, gs.getCurPlayer());       //not sure if this line works

@@ -43,7 +43,7 @@ public class UCT
         + 1.41 * Math.sqrt(Math.log(totalVisit) / (double) nodeVisit);
     }
   
-    public static Node findBestNodeWithUCT(Node node) 
+    public static Node findBestNodeWithUCT(Node node, boolean smart) 
     {
         int parentVisit = node.getState().getVisitCount();
         Move m = node.getState().getMove();
@@ -65,7 +65,7 @@ public class UCT
             System.out.println("Problem in UCT Sort");
             sortedChildren = null;
         }
-        if(sortedChildren.size() == 0)                      //crappy bandaid to cover up the bug on getHIdden returning null
+        if(sortedChildren.size() == 0 || !smart)                      //crappy bandaid to cover up the bug on getHIdden returning null
         {                                                   //gives an unsorted list when sort breaks down
             sortedChildren = node.getChildArray();          //line 192, sortPLaceMoves isDragon Trap is the problem, don't know why
         }

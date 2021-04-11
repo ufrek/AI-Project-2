@@ -7,14 +7,14 @@ import ProjectTwoEngine.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MonteCarloTreeSearch 
+public class RanDumSearch 
 {
 
   
     static final int winScore = 10;
     int level;
     PlayerID opponent;
-    int searchDuration = 5000;                      //play with values
+    int searchDuration = 25000;                      //play with values
     
    
 
@@ -73,7 +73,7 @@ public class MonteCarloTreeSearch
     
         while (node.getChildArray().size() != 0) 
         {
-            node = UCT.findBestNodeWithUCT(node, true);
+            node = UCT.findBestNodeWithUCT(node, false);
         }
         System.out.println("Node Selected");
         
@@ -157,7 +157,7 @@ public class MonteCarloTreeSearch
         
         while (!isGameOver(gs) && endGameVictor == null)                    
         {
-            gs = tempState.randomPlay(gs, false);
+            gs = tempState.randomPlay(gs, true);
             Move m = gs.getLastMove();//tempState.getMove();
             tempState = new State(m, gs, gs.getCurPlayer());
             tempNode = new Node(tempState, tempNode, gs.getCurPlayer());       //not sure if this line works
