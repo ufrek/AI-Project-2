@@ -1,0 +1,12 @@
+GreedyPlayer uses the Greedy Algorith to check what the best move is for that particular situation. 
+It basically tries to get the strongest monster unless it has a good idea of where the hidden dragon is located.
+
+MontePythonAI uses a MonteCarlo Tree Search to decide a move. It sorts the priorty of moves by using a modified greedy algorithmm which is 
+then put into an Upper Confidence Tree, which encourages searching unsearched nodes before comparing the "Win Score" of previous playouts.
+The random playyout is done against an instance of the greedy player to improve move choice.
+
+DumbMonteAI uses a toned down MonteCarlo Tree Search where the moves are not pre-sorted into the Upper Confidence Tree. 
+It tends to pick whatever moves are first in the moves list, i.e. lower buy thresholds than ideal. It still plays against a greedy player when looking ahead.
+
+RanDumbMonteAI uses a really weakened version of the MonteCarlo Tree Search where in addition to not pre-sorting the priority
+ of good and bad moves, the lookahead is also weaker since it now plays against a player that just picks random moves.
